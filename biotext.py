@@ -13,7 +13,7 @@ LARGE_UPCASES = ['Б', 'Г', 'Ґ', 'Д', 'Ж', 'И',
                  'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'Ю']
 
 class TextDraw():
-    def __init__(self, image: Image, fontsize = 124, thickness = 1, random = [2, 5], curl = [2, 5], cursive = [4, 9]):
+    def __init__(self, image: Image, fontsize = 100, thickness = 1, random = [0, 0], curl = [2, 5], cursive = [4, 9]):
         self.fontsize = fontsize
         self.curl = curl
         self.cursive = cursive
@@ -55,22 +55,11 @@ class TextDraw():
         return result
 
     def thickness_bezier(self, xyz):
+        self.points = xyz
         xyz = self.norm_size([(xyz[0][0], xyz[0][1]), 
                               (xyz[1][0], xyz[1][1]), 
                               (xyz[2][0], xyz[2][1])])
-        xyz2 = self.norm_size([(xyz[0][0], xyz[0][1]), 
-                              (xyz[1][0] - self.thickness, xyz[1][1] - self.thickness), 
-                              (xyz[2][0], xyz[2][1])])
-        xyz = self.curl_it(xyz)
-        
-        if self.points:
-            self.points.extend(self.make_bezier(xyz)(self.ts))
-            #self.points.extend(self.make_bezier(xyz2)(self.ts))
-        else:
-            bezier = self.make_bezier(xyz)
-            self.points = bezier(self.ts)
-            #bezier = self.make_bezier(xyz2)
-            #self.points.extend(bezier(self.ts))
+        #self.points = self.curl_it(xyz)
         self.draw_points()
 
     def line(self):
@@ -91,8 +80,13 @@ class TextDraw():
             #self.thickness_bezier([(64,50),(69,74),(99,99)])
 
     def draw_points(self):
+        self.quality_once(4)
         self.ts = [t/float(self.fontsize) for t in range(self.fontsize+1)]
-        self.canvas.polygon(self.points, fill="red")
+        c = 2
+        while (c < len(self.points)):
+            self.canvas.polygon([self.points[c-2], self.points[c-1], self.points[c]], fill="red")
+            #self.canvas.polygon([self.points[c-5], self.points[c-4], self.points[c-3], self.points[c-2], self.points[c-1], self.points[c]], fill="red")
+            c += 3
         self.points = []
 
     def norm_size(self, xyz: list):
@@ -106,15 +100,31 @@ class TextDraw():
                 (randint(self.curl[0], self.curl[1]) + xyz[2][0] - self.thickness, randint(self.curl[0], self.curl[1]) + xyz[2][1] - self.thickness)]
 
     def quality_once(self, value: int):
-        new_points, points = [], []
-        for i in range(value):
-            for j in range(len(self.points)):
-                points.append()
+        if value > 0:
+            points = []
+            c = 2
+            while (c < len(self.points)):
+                points.append(self.points[c-2])
+                points.append(((self.points[c-1][0] / 2 + self.points[c-2][0] / 2) / 2 + self.rand(), (self.points[c-1][1] / 2 + self.points[c-2][1] / 2) + self.rand()))
+                points.append((self.points[c-1][0], self.points[c-1][1]))
+                points.append((self.points[c-1][0], self.points[c-1][1]))
+                #points.append((self.points[c-1][0] + self.rand(), self.points[c-1][1] + self.rand()))
+                points.append(((self.points[c][0] / 2 + self.points[c-1][0] / 2) / 2 + self.rand(), (self.points[c][1] / 2 + self.points[c-1][1] / 2) + self.rand()))
+                points.append((self.points[c][0], self.points[c][1]))
+                c += 3
+            self.points = points
+            self.quality_once(value-1)
+        #[(10, 10), (60,40), (100,90)]
+        #[(10, 10), (30,20), (60,40), (60,40), (80,65), (100,90)]
 
     
-    def o(self):    
-        self.thickness_bezier([(50,1),(12,12),(20,50)])
-        #self.thickness_bezier([(50,1),(62,65),(50,99)])
+    def o(self):
+        self.thickness_bezier([(50,0),(0,50),(50,100)])
+        #self.thickness_bezier([(50,0),(25,15),(0,50)])
+        #self.thickness_bezier([(0,50),(25,80),(50,100)])
+
+    def rand(self):
+        return randint(self.random[0], self.random[1])
 
 class Text():
     def __init__(self, canvas: TextDraw, text: str): # offset max 3 elements
