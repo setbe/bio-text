@@ -87,10 +87,6 @@ class TextDraw():
             return self.divide(new_cords, divides-1)
         return cords
 
-
-    # [[(25, 90), (45, 1), (55, 3), (65, 95)]]
-    # [[(25, 90), (45, 1), (55, 3), (65, 95)], [(25, 90), (45, 1), (55, 3), (65, 95)]]
-
     def curve(self, cords: list, divide = 1):
         self.bezier(self.divide([cords], divide))
 
@@ -105,14 +101,21 @@ class TextDraw():
             #self.curve([(0, 0), (2,5), (2,6), (2,6)])
 
 class BioText(Ui_MainWindow, QMainWindow):
-    def __init__(self, text: str, width = 500, height = 500): # offset max 3 elements
+    def __init__(self, text: str, width = 500, height = 500):
         super(Ui_MainWindow, self).__init__()
         self.ui = self.setupUi(self)
 
         self.strings = text;
         self.image = Image.new('RGBA', (width*2, height*2), (255, 255, 255, 255)) 
         self.text = TextDraw(self.image)
+        self.source_image = None
 
     def draw(self):
         self.text.draw(self.strings[0])
         self.image = self.image.resize((self.image.width // 2, self.image.height // 2), resample=Image.ANTIALIAS)
+
+    def open_image(self):
+        pass
+
+    def quit(self):
+        pass
