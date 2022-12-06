@@ -1,5 +1,9 @@
-from biotext import Text
+from biotext import BioText
 
-t = Text('A')
-t.text.fontsize = 1000
-t.draw()
+from PyQt5.QtWidgets import QApplication
+from sys import argv
+
+app = QApplication(argv)
+win = BioText('A')
+win.show()
+app.exec_()
