@@ -4,12 +4,18 @@
 # а б в г ґ д е є ж з и і ї й к л м 
 #   н о п р с т у ф х ц ч ш щ ь ю я
 
-from PyQt5.QtWidgets import QMainWindow, QApplication
+from PyQt5.QtWidgets import QMainWindow, QFileDialog
+from PyQt5.QtGui import QPixmap, QImage
+import PyQt5.QtCore as QtCore
+from PyQt5.QtCore import QBuffer
 from window import Ui_MainWindow
+import io
 
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFilter
+from PIL.ImageQt import ImageQt
 from random import randint
 import math
+import functools
 
 
 LARGE_UPCASES = ['Б', 'Г', 'Ґ', 'Д', 'Ж', 'И', 
@@ -17,7 +23,7 @@ LARGE_UPCASES = ['Б', 'Г', 'Ґ', 'Д', 'Ж', 'И',
                  'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'Ю']
 
 class TextDraw():
-    def __init__(self, image: Image, fontsize = 50, thickness = 4, curl = [2, 5], cursive = 10, color = "red"):
+    def __init__(self, image: Image, fontsize = 550, thickness = 4, curl = [2, 5], cursive = 10, color = "red"):
         self.fontsize = fontsize
         self.curl = curl
         self.cursive = cursive
@@ -87,35 +93,185 @@ class TextDraw():
             return self.divide(new_cords, divides-1)
         return cords
 
-    def curve(self, cords: list, divide = 1):
+    def curve(self, cords: list, divide = 0):
         self.bezier(self.divide([cords], divide))
 
-    def continue_(self, cords: list, divide = 1):
+    def continue_(self, cords: list, divide = 0):
         cords[0][0] = self.last_pos[0]
         cords[0][1] = self.last_pos[1]
         self.curve(cords, divide)
 
     def draw(self, letter: str):
         if letter == 'A' or letter == 'А':
-            self.curve([(25, 100), (20, 0), (80, 0), (75, 100)], 1)
+            self.curve([(25, 100), (20, 0), (80, 0), (75, 100)])
             #self.curve([(0, 0), (2,5), (2,6), (2,6)])
+    
+    def clear(self, image: Image):
+        self.canvas.rectangle((0, 0, image.width, image.height), fill=(0, 0, 0, 0))
 
 class BioText(Ui_MainWindow, QMainWindow):
-    def __init__(self, text: str, width = 500, height = 500):
+    def __init__(self):
         super(Ui_MainWindow, self).__init__()
         self.ui = self.setupUi(self)
+        self.source_image = None        # QPixmap          // user image
+        self.source_pil = None
+        self.overlay_image = None       # Pillow Image     // where text will be rendered
+        self.obj = None                 # TextDraw Class   // text render class
 
-        self.strings = text;
-        self.image = Image.new('RGBA', (width*2, height*2), (255, 255, 255, 255)) 
-        self.text = TextDraw(self.image)
-        self.source_image = None
+        # connections / signals
+        self.textEdit.textChanged.connect(self.text_changed)
+        # source image (AKA user image)
+        self.lImage.mousePressEvent = self.open_image
+        self.lImage.resizeEvent = self.resize_source_image
+        # actions
+        self.actionExport.triggered.connect(self.export)
+        self.actionQuit.triggered.connect(self.quit)
+        self.actionText.triggered.connect(self.save_text)
 
-    def draw(self):
-        self.text.draw(self.strings[0])
-        self.image = self.image.resize((self.image.width // 2, self.image.height // 2), resample=Image.ANTIALIAS)
+        # spinboxes -- Style
+        
+        # spinboxes -- Text
+        self.sXPos.valueChanged.connect(self.x_pos_value_changed)
+        self.sYPos.valueChanged.connect(self.y_pos_value_changed)
 
-    def open_image(self):
-        pass
+    def redraw_overlay(self):
+        if self.source_image and not self.source_image.isNull():
+            self.obj.clear(self.overlay_image)
+            if self.textEdit.toPlainText():
+                self.obj.draw(self.textEdit.toPlainText().split("\n")[0][0])
+
+            source = self.source_pil
+
+            overlay = self.overlay_image.resize((self.overlay_image.width // 2, self.overlay_image.height // 2), resample=Image.ANTIALIAS)
+            source.paste(overlay, (self.sXPos.value(), self.sYPos.value()), overlay)
+            source = ImageQt(source)
+
+            pixmap = QPixmap.fromImage(source)
+            pixmap = pixmap.scaled(self.lImage.width(), self.lImage.height(), QtCore.Qt.KeepAspectRatio)
+            self.lImage.setPixmap(pixmap)
+
+    def open_image(self, event):
+        if not self.source_image or self.source_image.isNull():
+            imagePath, _ = QFileDialog.getOpenFileName()
+            if imagePath:
+                self.source_image = QPixmap(imagePath)
+                if not self.source_image.isNull():
+                    self.source_pil = QPixmap.toImage(self.source_image)
+                    buffer = QBuffer()
+                    buffer.open(QBuffer.ReadWrite)
+                    self.source_pil.save(buffer, 'PNG')
+                    self.source_pil = Image.open(io.BytesIO(buffer.data()))
+                    self.overlay_image = Image.new('RGBA', (self.source_image.width()*2, self.source_image.height()*2), (0, 0, 0, 0)) 
+                    self.obj = TextDraw(self.overlay_image)
+                    self.resize_source_image(0)
+    
+    def resize_source_image(self, event):
+        if self.source_image:
+            self.redraw_overlay()
+
+    def export(self):
+        if self.source_image and self.overlay_image:
+            imagePath, _ = QFileDialog.getSaveFileName(self,"Export to...","","png;;jpg;;gif;;bpm;;jpeg;;webp")
+            if imagePath:
+                self.obj.clear(self.overlay_image)
+                if self.textEdit.toPlainText():
+                    self.obj.draw(self.textEdit.toPlainText().split("\n")[0][0])
+
+                    source = self.source_pil
+                    overlay = self.overlay_image
+                    overlay = overlay.resize((self.overlay_image.width // 2, self.overlay_image.height // 2), resample=Image.ANTIALIAS)
+                    overlay = overlay.filter(ImageFilter.SMOOTH)
+
+                    source.paste(overlay, (self.sXPos.value(), self.sYPos.value()), overlay)
+                    _ = _.strip()
+                    if _ in ['jpg', 'jpeg', 'bmp']:
+                        source = source.convert('RGB')
+                    source.save(imagePath + "." + _)
+
+    def save_text(self):
+        if self.textEdit.toPlainText():
+            f = open("text.txt", "w")
+            f.write(self.textEdit.toPlainText())
+            f.close()
 
     def quit(self):
+        self.close()
+
+    def text_changed(self):
+        self.redraw_overlay()
+
+    def value_changed(method):
+        @functools.wraps(method)
+        def wrapper(self):
+            method(self)
+            self.redraw_overlay()
+        return wrapper
+
+    # spinboxes
+    @value_changed
+    def fontsize_value_changed(self):
+        pass
+
+    @value_changed
+    def cursive_value_changed(self):
+        pass
+
+    @value_changed
+    def thickness_value_changed(self):
+        pass
+
+    @value_changed
+    def thickness_value_changed(self):
+        pass
+
+    @value_changed
+    def x_pos_value_changed(self):
+        pass
+
+    @value_changed
+    def y_pos_value_changed(self):
+        pass
+
+    @value_changed
+    def thickness_value_changed(self):
+        pass
+
+    @value_changed
+    def resolution_width_value_changed(self):
+        pass
+
+    @value_changed
+    def resolution_height_value_changed(self):
+        pass
+
+    @value_changed
+    def anchor_x1_value_changed(self):
+        pass
+
+    @value_changed
+    def anchor_y1_value_changed(self):
+        pass
+
+    @value_changed
+    def anchor_x2_value_changed(self):
+        pass
+
+    @value_changed
+    def anchor_y2_value_changed(self):
+        pass
+
+    @value_changed
+    def anchor_x3_value_changed(self):
+        pass
+
+    @value_changed
+    def anchor_y3_value_changed(self):
+        pass
+
+    @value_changed
+    def anchor_x4_value_changed(self):
+        pass
+
+    @value_changed
+    def anchor_y4_value_changed(self):
         pass
