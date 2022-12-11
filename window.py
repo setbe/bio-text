@@ -75,12 +75,14 @@ class Ui_MainWindow(object):
 "\n"
 "QScrollBar, QScrollArea {\n"
 "    border: 0px;\n"
-"    margin: 8px 0px;\n"
+"    margin: 0px 0px;\n"
 "    background-color: none;\n"
 "}\n"
 "\n"
 "QScrollBar::sub-page:vertical, QScrollBar::add-page:vertical, \n"
-"QScrollBar::sub-line:vertical, QScrollBar::add-line:vertical, QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {\n"
+"QScrollBar::sub-line:vertical, QScrollBar::add-line:vertical, QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical,\n"
+"QScrollBar::sub-page:horizontal, QScrollBar::add-page:horizontal, \n"
+"QScrollBar::sub-line:horizontal, QScrollBar::add-line:horizontal, QScrollBar::up-arrow:horizontal, QScrollBar::down-arrow:horizontal {\n"
 "    background-color: none;\n"
 "}\n"
 "\n"
@@ -90,7 +92,7 @@ class Ui_MainWindow(object):
 "}\n"
 "\n"
 "QScrollBar::handle:hover {\n"
-"    backround-color: #474750;\n"
+"    background-color: #474750;\n"
 "}\n"
 "\n"
 "QSpinBox, QComboBox {\n"
@@ -155,24 +157,64 @@ class Ui_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.centralwidget)
+        self.horizontalLayout.setContentsMargins(9, 9, 9, 9)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.frame_2 = QtWidgets.QFrame(self.centralwidget)
+        self.frame_2.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.frame_2.setStyleSheet("QFrame {\n"
-"    background-color: #302F35;\n"
+"    background-color: #28272C;\n"
 "    border-radius: 12px;\n"
+"}\n"
+"\n"
+"QScrollBar, QScrollArea {\n"
+"    border: 0px;\n"
+"    margin: 2px 2px;\n"
+"    background-color: #38373E;\n"
+"}\n"
+"\n"
+"QScrollBar:horizontal {\n"
+"    height: 16px;\n"
+"}\n"
+"\n"
+"QScrollBar:vertical {\n"
+"    width: 16px;\n"
+"}\n"
+"\n"
+"QScrollBar::handle {\n"
+"    border: 0px;\n"
+"    border-radius: 5px;\n"
+"    background-color: #D7D6E1;\n"
+"    min-width: 12px;\n"
+"    min-height: 12px;\n"
+"}\n"
+"\n"
+"QScrollBar::sub-page, QScrollBar::add-page, QScrollBar::up-arrow,QScrollBar::down-arrow, QScrollArea {\n"
+"    background-color: #28272C;\n"
 "}")
         self.frame_2.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame_2.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_2.setObjectName("frame_2")
-        self.verticalLayout_5 = QtWidgets.QVBoxLayout(self.frame_2)
-        self.verticalLayout_5.setObjectName("verticalLayout_5")
-        self.lImage = QtWidgets.QLabel(self.frame_2)
+        self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.frame_2)
+        self.horizontalLayout_2.setContentsMargins(18, 1, 2, 4)
+        self.horizontalLayout_2.setObjectName("horizontalLayout_2")
+        self.scrollArea_2 = QtWidgets.QScrollArea(self.frame_2)
+        self.scrollArea_2.setWidgetResizable(True)
+        self.scrollArea_2.setObjectName("scrollArea_2")
+        self.scrollAreaWidgetContents = QtWidgets.QWidget()
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 534, 629))
+        self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
+        self.verticalLayout_6 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents)
+        self.verticalLayout_6.setContentsMargins(4, 4, 4, 4)
+        self.verticalLayout_6.setSpacing(2)
+        self.verticalLayout_6.setObjectName("verticalLayout_6")
+        self.lImage = QtWidgets.QLabel(self.scrollAreaWidgetContents)
         self.lImage.setMinimumSize(QtCore.QSize(0, 0))
         font = QtGui.QFont()
         font.setPointSize(-1)
         font.setBold(True)
         font.setWeight(75)
         self.lImage.setFont(font)
+        self.lImage.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
         self.lImage.setStyleSheet("QLabel {\n"
 "    font-size: 24px;\n"
 "    background-color: #28272C;\n"
@@ -180,7 +222,9 @@ class Ui_MainWindow(object):
         self.lImage.setTextFormat(QtCore.Qt.RichText)
         self.lImage.setAlignment(QtCore.Qt.AlignCenter)
         self.lImage.setObjectName("lImage")
-        self.verticalLayout_5.addWidget(self.lImage)
+        self.verticalLayout_6.addWidget(self.lImage)
+        self.scrollArea_2.setWidget(self.scrollAreaWidgetContents)
+        self.horizontalLayout_2.addWidget(self.scrollArea_2)
         self.horizontalLayout.addWidget(self.frame_2)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
@@ -216,6 +260,8 @@ class Ui_MainWindow(object):
         self.menuFile.setObjectName("menuFile")
         self.menuSave = QtWidgets.QMenu(self.menuFile)
         self.menuSave.setObjectName("menuSave")
+        self.menuOpen = QtWidgets.QMenu(self.menuFile)
+        self.menuOpen.setObjectName("menuOpen")
         self.menuEdit = QtWidgets.QMenu(self.menubar)
         self.menuEdit.setObjectName("menuEdit")
         self.menuSettings = QtWidgets.QMenu(self.menubar)
@@ -224,6 +270,8 @@ class Ui_MainWindow(object):
         self.menuHelp.setObjectName("menuHelp")
         self.menuView = QtWidgets.QMenu(self.menubar)
         self.menuView.setObjectName("menuView")
+        self.menuShow = QtWidgets.QMenu(self.menuView)
+        self.menuShow.setObjectName("menuShow")
         MainWindow.setMenuBar(self.menubar)
         self.dockStyle = QtWidgets.QDockWidget(MainWindow)
         self.dockStyle.setMinimumSize(QtCore.QSize(400, 200))
@@ -729,15 +777,41 @@ class Ui_MainWindow(object):
         self.actionText = QtWidgets.QAction(MainWindow)
         self.actionText.setShortcut("Ctrl+T")
         self.actionText.setObjectName("actionText")
+        self.actionFullsize_Image = QtWidgets.QAction(MainWindow)
+        self.actionFullsize_Image.setEnabled(False)
+        self.actionFullsize_Image.setShortcut("Ctrl+F")
+        self.actionFullsize_Image.setObjectName("actionFullsize_Image")
+        self.actionInput = QtWidgets.QAction(MainWindow)
+        self.actionInput.setObjectName("actionInput")
+        self.actionStyle_2 = QtWidgets.QAction(MainWindow)
+        self.actionStyle_2.setObjectName("actionStyle_2")
+        self.actionOverlay_Text = QtWidgets.QAction(MainWindow)
+        self.actionOverlay_Text.setObjectName("actionOverlay_Text")
+        self.actionOpen_3 = QtWidgets.QAction(MainWindow)
+        self.actionOpen_3.setShortcut("Ctrl+O")
+        self.actionOpen_3.setObjectName("actionOpen_3")
+        self.actionText_2 = QtWidgets.QAction(MainWindow)
+        self.actionText_2.setObjectName("actionText_2")
+        self.actionStyle_3 = QtWidgets.QAction(MainWindow)
+        self.actionStyle_3.setObjectName("actionStyle_3")
         self.menuSave.addAction(self.actionStyle)
         self.menuSave.addAction(self.actionText)
-        self.menuFile.addAction(self.actionOpen)
+        self.menuOpen.addAction(self.actionOpen_3)
+        self.menuOpen.addAction(self.actionText_2)
+        self.menuOpen.addAction(self.actionStyle_3)
+        self.menuFile.addAction(self.menuOpen.menuAction())
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.menuSave.menuAction())
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionExport)
         self.menuFile.addSeparator()
         self.menuFile.addAction(self.actionQuit)
+        self.menuShow.addAction(self.actionInput)
+        self.menuShow.addAction(self.actionStyle_2)
+        self.menuShow.addAction(self.actionOverlay_Text)
+        self.menuView.addAction(self.actionFullsize_Image)
+        self.menuView.addSeparator()
+        self.menuView.addAction(self.menuShow.menuAction())
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuEdit.menuAction())
         self.menubar.addAction(self.menuView.menuAction())
@@ -753,10 +827,12 @@ class Ui_MainWindow(object):
         self.lImage.setText(_translate("MainWindow", "Open the image"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.menuSave.setTitle(_translate("MainWindow", "Save"))
+        self.menuOpen.setTitle(_translate("MainWindow", "Open"))
         self.menuEdit.setTitle(_translate("MainWindow", "Edit"))
         self.menuSettings.setTitle(_translate("MainWindow", "Settings"))
         self.menuHelp.setTitle(_translate("MainWindow", "About"))
         self.menuView.setTitle(_translate("MainWindow", "View"))
+        self.menuShow.setTitle(_translate("MainWindow", "Show"))
         self.dockStyle.setWindowTitle(_translate("MainWindow", "Style"))
         self.groupBox.setTitle(_translate("MainWindow", "Font"))
         self.lColor.setText(_translate("MainWindow", "color:"))
@@ -792,3 +868,10 @@ class Ui_MainWindow(object):
         self.actionQuit.setText(_translate("MainWindow", "Quit"))
         self.actionStyle.setText(_translate("MainWindow", "Style"))
         self.actionText.setText(_translate("MainWindow", "Text"))
+        self.actionFullsize_Image.setText(_translate("MainWindow", "Fullsize Image"))
+        self.actionInput.setText(_translate("MainWindow", "Edit"))
+        self.actionStyle_2.setText(_translate("MainWindow", "Style"))
+        self.actionOverlay_Text.setText(_translate("MainWindow", "Overlay Settings"))
+        self.actionOpen_3.setText(_translate("MainWindow", "Image..."))
+        self.actionText_2.setText(_translate("MainWindow", "Text..."))
+        self.actionStyle_3.setText(_translate("MainWindow", "Style..."))

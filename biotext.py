@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QMainWindow, QFileDialog
-from PyQt5.QtGui import QPixmap, QImage
+from PyQt5.QtGui import QPixmap
 import PyQt5.QtCore as QtCore
 from PyQt5.QtCore import QBuffer
 from window import Ui_MainWindow
@@ -37,7 +37,7 @@ class TextDraw():
     def func(self, cords: list, t):
         new_cords = []
         for cord in cords:
-            new_cords.append(((cord[0] * self.style.fontsize) / 50, (cord[1] * self.style.fontsize) / 50))
+            new_cords.append(((cord[0] * self.style.fontsize) / 100, (cord[1] * self.style.fontsize) / 100))
 
         cords = new_cords
         return (
@@ -105,26 +105,31 @@ class TextDraw():
         cords[0][1] = self.last_pos[1]
         self.curve(cords, divide)
 
-    def draw(self, letter: str):
-        w = len(max(letter.split('\n'))) * self.style.fontsize
-        h = len(letter.split('\n')) * self.style.fontsize
+    def draw(self, string: str):
+        w = len(string) * self.style.fontsize
+        h = self.style.fontsize
 
-        self.im = Image.new("RGBA", (w*2, h*2), color=(0,0,0,0))
+        print("width: ", w)
+        print("height: ", h)
+
+        self.im = Image.new("RGBA", (w, h), color=(0,0,0,0))
         self.canvas = ImageDraw.Draw(self.im, "RGBA")
+        self.canvas.rectangle((0,0,w,h), (70, 0, 0, 60))
 
-        if letter == 'A' or letter == 'А':
+        if string[0] == 'A' or string[0] == 'А':
             self.curve([(35, 90), (24, 15), (70, 10), (65, 90)], 1)
-            #self.curve([(0, 0), (2,5), (2,6), (2,6)])
-        self.im = self.im.resize((w, h), Image.ANTIALIAS)
+
+        #self.im = self.im.resize((w, h), Image.BILINEAR)
+        self.im = self.im.filter(ImageFilter.SMOOTH_MORE)
         return self.im
 
 class BioText(Ui_MainWindow, QMainWindow):
     def __init__(self, text_style: TextStyle = None):
         super(Ui_MainWindow, self).__init__()
         self.ui = self.setupUi(self)
-        self.source_image = None        # QPixmap          // user image
-        self.source_pil = None
+        self.source = None
         self.draw = TextDraw(text_style)                 # TextDraw Class   // text render class
+        self.image_fullsize = False
         
         if text_style:
             self.sSize.setValue(text_style.fontsize)
@@ -144,6 +149,7 @@ class BioText(Ui_MainWindow, QMainWindow):
         self.actionExport.triggered.connect(self.export)
         self.actionQuit.triggered.connect(self.quit)
         self.actionText.triggered.connect(self.save_text)
+        self.actionFullsize_Image.triggered.connect(self.open_image)
 
         # spinboxes -- Style
         self.sSize.valueChanged.connect(self.fontsize_changed)
@@ -169,47 +175,52 @@ class BioText(Ui_MainWindow, QMainWindow):
         self.ax1.valueChanged.connect(self.spinbox_changed)
 
     def redraw_overlay(self):
-        if self.source_image and not self.source_image.isNull():
+        if self.source:
             if self.textEdit.toPlainText():
-                overlay = self.draw.draw(self.textEdit.toPlainText().split("\n")[0][0])
-                source = self.source_pil.copy()
+                overlay = self.draw.draw(self.textEdit.toPlainText().split("\n")[0])
+                source = self.source.copy()
                 source.paste(overlay, (self.sXPos.value(), self.sYPos.value()), overlay)
                 source = ImageQt(source)
 
                 pixmap = QPixmap.fromImage(source)
-                pixmap = pixmap.scaled(self.lImage.width(), self.lImage.height(), QtCore.Qt.KeepAspectRatio)
+                if not self.image_fullsize:
+                    pixmap = pixmap.scaled(self.frame_2.width() - 20, self.frame_2.height() - 30, QtCore.Qt.KeepAspectRatio)
                 self.lImage.setPixmap(pixmap)
 
     def open_image(self, event = None, path = None):
-        if not self.source_image or self.source_image.isNull():
+        if not self.source:
             if not path:
                 imagePath, _ = QFileDialog.getOpenFileName()
             else:
                 imagePath = path
             if imagePath:
-                self.source_image = QPixmap(imagePath)
-                if not self.source_image.isNull():
-                    self.source_pil = QPixmap.toImage(self.source_image)
+                source_image = QPixmap(imagePath)
+                if not source_image.isNull():
+                    self.actionFullsize_Image.setEnabled(True)
+                    self.source = QPixmap.toImage(source_image)
                     buffer = QBuffer()
                     buffer.open(QBuffer.ReadWrite)
-                    self.source_pil.save(buffer, 'PNG')
-                    self.source_pil = Image.open(io.BytesIO(buffer.data()))
+                    self.source.save(buffer, 'PNG')
+                    self.source = Image.open(io.BytesIO(buffer.data()))
                     if self.draw.style.fontsize == 0:
-                        self.draw.style.fontsize = self.source_pil.height // 20
+                        self.draw.style.fontsize = self.source.height // 20
                         self.sSize.setValue(self.draw.style.fontsize)
                     self.resize_source_image()
+        else:
+            self.image_fullsize = not self.image_fullsize
+            self.resize_source_image()
     
     def resize_source_image(self, event = None):
-        if self.source_image:
+        if self.source:
             self.redraw_overlay()
 
     def export(self):
-        if self.source_image and self.textEdit.toPlainText():
+        if self.source and self.textEdit.toPlainText():
             imagePath, _ = QFileDialog.getSaveFileName(self,"Export to...","","png;;jpg;;gif;;bpm;;jpeg;;webp")
 
             if imagePath:
-                overlay = self.draw.draw(self.textEdit.toPlainText().split("\n")[0][0])
-                source = self.source_pil
+                overlay = self.draw.draw(self.textEdit.toPlainText().split("\n")[0])
+                source = self.source
                 source.paste(overlay, (self.sXPos.value(), self.sYPos.value()), overlay)
 
                 _ = _.strip()
@@ -266,5 +277,3 @@ class BioText(Ui_MainWindow, QMainWindow):
     @value_changed
     def yPos_changed(self):
         self.draw.style.yPos = self.sYPos.value()
-
-        #self.obj.style.color = self.sSize.value()

@@ -88,12 +88,14 @@ QTabBar::tab:!selected:hover {
 
 QScrollBar, QScrollArea {
 	border: 0px;
-	margin: 8px 0px;
+	margin: 0px 0px;
 	background-color: none;
 }
 
 QScrollBar::sub-page:vertical, QScrollBar::add-page:vertical, 
-QScrollBar::sub-line:vertical, QScrollBar::add-line:vertical, QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
+QScrollBar::sub-line:vertical, QScrollBar::add-line:vertical, QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical,
+QScrollBar::sub-page:horizontal, QScrollBar::add-page:horizontal, 
+QScrollBar::sub-line:horizontal, QScrollBar::add-line:horizontal, QScrollBar::up-arrow:horizontal, QScrollBar::down-arrow:horizontal {
 	background-color: none;
 }
 
@@ -103,7 +105,7 @@ QScrollBar::handle {
 }
 
 QScrollBar::handle:hover {
-	backround-color: #474750;
+	background-color: #474750;
 }
 
 QSpinBox, QComboBox {
@@ -168,12 +170,53 @@ QLabel {
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
+    <property name="leftMargin">
+     <number>9</number>
+    </property>
+    <property name="topMargin">
+     <number>9</number>
+    </property>
+    <property name="rightMargin">
+     <number>9</number>
+    </property>
+    <property name="bottomMargin">
+     <number>9</number>
+    </property>
     <item>
      <widget class="QFrame" name="frame_2">
+      <property name="cursor">
+       <cursorShape>PointingHandCursor</cursorShape>
+      </property>
       <property name="styleSheet">
        <string notr="true">QFrame {
-	background-color: #302F35;
+	background-color: #28272C;
 	border-radius: 12px;
+}
+
+QScrollBar, QScrollArea {
+	border: 0px;
+	margin: 2px 2px;
+	background-color: #38373E;
+}
+
+QScrollBar:horizontal {
+	height: 16px;
+}
+
+QScrollBar:vertical {
+	width: 16px;
+}
+
+QScrollBar::handle {
+	border: 0px;
+	border-radius: 5px;
+	background-color: #D7D6E1;
+	min-width: 12px;
+	min-height: 12px;
+}
+
+QScrollBar::sub-page, QScrollBar::add-page, QScrollBar::up-arrow,QScrollBar::down-arrow, QScrollArea {
+	background-color: #28272C;
 }</string>
       </property>
       <property name="frameShape">
@@ -182,37 +225,86 @@ QLabel {
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_5">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <property name="leftMargin">
+        <number>18</number>
+       </property>
+       <property name="topMargin">
+        <number>1</number>
+       </property>
+       <property name="rightMargin">
+        <number>2</number>
+       </property>
+       <property name="bottomMargin">
+        <number>4</number>
+       </property>
        <item>
-        <widget class="QLabel" name="lImage">
-         <property name="minimumSize">
-          <size>
-           <width>0</width>
-           <height>0</height>
-          </size>
+        <widget class="QScrollArea" name="scrollArea_2">
+         <property name="widgetResizable">
+          <bool>true</bool>
          </property>
-         <property name="font">
-          <font>
-           <pointsize>-1</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="styleSheet">
-          <string notr="true">QLabel {
+         <widget class="QWidget" name="scrollAreaWidgetContents">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>534</width>
+            <height>629</height>
+           </rect>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_6">
+           <property name="spacing">
+            <number>2</number>
+           </property>
+           <property name="leftMargin">
+            <number>4</number>
+           </property>
+           <property name="topMargin">
+            <number>4</number>
+           </property>
+           <property name="rightMargin">
+            <number>4</number>
+           </property>
+           <property name="bottomMargin">
+            <number>4</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="lImage">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>-1</pointsize>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="cursor">
+              <cursorShape>ArrowCursor</cursorShape>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QLabel {
 	font-size: 24px;
 	background-color: #28272C;
 }</string>
-         </property>
-         <property name="text">
-          <string>Open the image</string>
-         </property>
-         <property name="textFormat">
-          <enum>Qt::RichText</enum>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
+             </property>
+             <property name="text">
+              <string>Open the image</string>
+             </property>
+             <property name="textFormat">
+              <enum>Qt::RichText</enum>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
         </widget>
        </item>
       </layout>
@@ -268,7 +360,15 @@ QMenu::indicator {
      <addaction name="actionStyle"/>
      <addaction name="actionText"/>
     </widget>
-    <addaction name="actionOpen"/>
+    <widget class="QMenu" name="menuOpen">
+     <property name="title">
+      <string>Open</string>
+     </property>
+     <addaction name="actionOpen_3"/>
+     <addaction name="actionText_2"/>
+     <addaction name="actionStyle_3"/>
+    </widget>
+    <addaction name="menuOpen"/>
     <addaction name="separator"/>
     <addaction name="menuSave"/>
     <addaction name="separator"/>
@@ -295,6 +395,17 @@ QMenu::indicator {
     <property name="title">
      <string>View</string>
     </property>
+    <widget class="QMenu" name="menuShow">
+     <property name="title">
+      <string>Show</string>
+     </property>
+     <addaction name="actionInput"/>
+     <addaction name="actionStyle_2"/>
+     <addaction name="actionOverlay_Text"/>
+    </widget>
+    <addaction name="actionFullsize_Image"/>
+    <addaction name="separator"/>
+    <addaction name="menuShow"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -1645,6 +1756,50 @@ QScrollBar::sub-page, QScrollBar::add-page, QScrollBar::up-arrow,QScrollBar::dow
    </property>
    <property name="shortcut">
     <string notr="true">Ctrl+T</string>
+   </property>
+  </action>
+  <action name="actionFullsize_Image">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Fullsize Image</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true">Ctrl+F</string>
+   </property>
+  </action>
+  <action name="actionInput">
+   <property name="text">
+    <string>Edit</string>
+   </property>
+  </action>
+  <action name="actionStyle_2">
+   <property name="text">
+    <string>Style</string>
+   </property>
+  </action>
+  <action name="actionOverlay_Text">
+   <property name="text">
+    <string>Overlay Settings</string>
+   </property>
+  </action>
+  <action name="actionOpen_3">
+   <property name="text">
+    <string>Image...</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true">Ctrl+O</string>
+   </property>
+  </action>
+  <action name="actionText_2">
+   <property name="text">
+    <string>Text...</string>
+   </property>
+  </action>
+  <action name="actionStyle_3">
+   <property name="text">
+    <string>Style...</string>
    </property>
   </action>
  </widget>
