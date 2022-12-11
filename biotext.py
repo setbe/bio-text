@@ -11,24 +11,22 @@ from random import randint
 import math
 import functools
 
+from style import TextStyle
+from letterset import letter_set
 
-class TextStyle():
-    def __init__(self, fontsize = 0, cursive = 5, thickness = 2, curl = 5, color = "#131315"):
-        self.fontsize = fontsize
-        self.cursive = cursive
-        self.thickness = thickness
-        self.curl = curl
-        self.color = color
-
-        self.xPos = 0
-        self.yPos = 0
-
+def ave(p1: tuple, p2: tuple, x, y):
+    if (x > p1[0] and y > p1[1]) and (x < p2[0] and y < p2[1]):
+        return x / 2 - y / 2
+    else:
+        return x / 2 + y / 2
+    
 class TextDraw():
     def __init__(self, style: TextStyle):
         self.im = None
         self.canvas = None
         self.last_pos = []
-        self.divide_random = [18, 22]
+        self.random = [-4, 4]
+        self.x_margin, self.y_margin = 0, 0
         if style:
             self.style = style
         else:
@@ -37,7 +35,7 @@ class TextDraw():
     def func(self, cords: list, t):
         new_cords = []
         for cord in cords:
-            new_cords.append(((cord[0] * self.style.fontsize) / 100, (cord[1] * self.style.fontsize) / 100))
+            new_cords.append(((cord[0] * self.style.fontsize) / 100 + self.x_margin, (cord[1] * self.style.fontsize) / 100))
 
         cords = new_cords
         return (
@@ -61,33 +59,35 @@ class TextDraw():
             self.last_pos = [curve[-1][0], curve[-1][1]]
             self.canvas.polygon(curve, self.style.color)
 
-    def divide_func(self, xy: tuple, xy2: tuple, use_random = True, xy3_4 = None):
-        if use_random == 66:
-            return ((xy[0] - xy2[0]) / (randint(self.divide_random[0], self.divide_random[1]) / 10), (xy2[1] - xy2[1]) / (randint(self.divide_random[0], self.divide_random[1]) / 10))
-        else:
-            if xy3_4 == None:
-                return ((xy[0] + xy2[0]) / 2, (xy2[1] + xy2[1]) / 2)
-            else:
-                return ((xy[0] + xy2[0]) / 2 - ((xy3_4[0] + xy3_4[0]) / 2) / 2, (xy2[1] + xy2[1]) / 2 - ((xy3_4[1][1] + xy3_4[1][1]) / 2) / 2)
+    def rand(self):
+        return randint(self.random[0], self.random[1])
+
+    def divide_func(self, xy0, xym, xy: tuple, xy2: tuple):
+        return (ave(xy0, xym, xy[0], xy[1]), ave(xy0, xym, xy2[0], xy2[1]))
+        return ((xy[0] - xy2[0]) / self.rando(), (xy2[1] - xy2[1]) / self.rando())
 
     def divide(self, cords: list, divides):
         new_cords = []
         if divides > 0:
             for cord in cords:
                 cords_list = []
-                cords_list.append((cord[0][0], cord[0][1]))
-                cords_list.append(self.divide_func(cord[0], cord[1]))
-                cords_list.append((cord[1][0], cord[1][1]))
-                cords_list.append(self.divide_func(cord[1], cord[2]))
+                cords_list.append((cord[0][0]+self.rand(), cord[0][1]+self.rand()))
+                #cords_list.append(self.divide_func(cord[0], cord[2], cord[0], cord[1]))
+                cords_list.append((cord[1][0]+self.rand(), cord[1][1]+self.rand()))
+                cords_list.append((cord[1][0]+self.rand(), cord[1][1]+self.rand()))
+                #cords_list.append(self.divide_func(cord[0], cord[2], cord[1], cord[2]))
+                cords_list.append((cord[2][0], cord[2][1]))
                 cords_list[2] = (cords_list[2][0] + self.style.cursive, cords_list[2][1])
                 cords_list[3] = (cords_list[3][0] + self.style.cursive, cords_list[3][1])
 
                 new_cords.append(cords_list)
 
                 cords_list = []
-                cords_list.append(self.divide_func(cord[1], cord[2]))
+                #cords_list.append(self.divide_func(cord[0], cord[2], cord[1], cord[2]))
                 cords_list.append((cord[2][0], cord[2][1]))
-                cords_list.append(self.divide_func(cord[2], cord[3]))
+                cords_list.append((cord[2][0]+self.rand(), cord[2][1]+self.rand()))
+                #cords_list.append(self.divide_func(cord[0], cord[2], cord[2], cord[3]))
+                cords_list.append((cord[3][0]+self.rand(), cord[3][1]+self.rand()))
                 cords_list.append((cord[3][0], cord[3][1]))
                 cords_list[0] = (cords_list[0][0] + self.style.cursive, cords_list[0][1])
                 cords_list[1] = (cords_list[1][0] + self.style.cursive, cords_list[1][1])
@@ -98,26 +98,26 @@ class TextDraw():
         return cords
 
     def curve(self, cords: list, divide = 0):
-        self.bezier(self.divide([cords], divide))
+        self.bezier(self.divide(cords, divide))
 
     def continue_(self, cords: list, divide = 0):
         cords[0][0] = self.last_pos[0]
         cords[0][1] = self.last_pos[1]
         self.curve(cords, divide)
 
-    def draw(self, string: str):
+    def draw(self, string: str, divides: int = 0):
         w = len(string) * self.style.fontsize
         h = self.style.fontsize
-
-        print("width: ", w)
-        print("height: ", h)
+        self.x_margin, self.y_margin = 0, 0
 
         self.im = Image.new("RGBA", (w, h), color=(0,0,0,0))
         self.canvas = ImageDraw.Draw(self.im, "RGBA")
-        self.canvas.rectangle((0,0,w,h), (70, 0, 0, 60))
+        #self.canvas.rectangle((0,0,w,h), (70, 0, 0, 60))
 
-        if string[0] == 'A' or string[0] == 'А':
-            self.curve([(35, 90), (24, 15), (70, 10), (65, 90)], 1)
+        for char in string:
+            if char in letter_set.keys():
+                self.curve(letter_set[char]["curve"], letter_set[char]["divide"] + divides)
+                self.x_margin += letter_set[char]["width"]
 
         #self.im = self.im.resize((w, h), Image.BILINEAR)
         self.im = self.im.filter(ImageFilter.SMOOTH_MORE)
@@ -177,9 +177,12 @@ class BioText(Ui_MainWindow, QMainWindow):
     def redraw_overlay(self):
         if self.source:
             if self.textEdit.toPlainText():
-                overlay = self.draw.draw(self.textEdit.toPlainText().split("\n")[0])
+                y_margin = 0
                 source = self.source.copy()
-                source.paste(overlay, (self.sXPos.value(), self.sYPos.value()), overlay)
+                for string in self.textEdit.toPlainText().split('\n'):
+                    overlay = self.draw.draw(string, self.sDivide.value())
+                    source.paste(overlay, (self.sXPos.value(), self.sYPos.value() + y_margin), overlay)
+                    y_margin += self.draw.style.fontsize
                 source = ImageQt(source)
 
                 pixmap = QPixmap.fromImage(source)

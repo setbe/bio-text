@@ -487,7 +487,7 @@ QMenu::indicator {
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>0</y>
+          <y>-403</y>
           <width>437</width>
           <height>600</height>
          </rect>
@@ -1036,6 +1036,9 @@ QListView {
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
+              </property>
+              <property name="maximum">
+               <number>3</number>
               </property>
              </widget>
             </item>
