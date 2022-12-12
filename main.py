@@ -11,25 +11,7 @@ style.yPos = 50
 app = QApplication(argv)
 win = BioText(style)
 
-win.textEdit.setText('''ACDCDC
-DC
-CD CDCD
-
-CDADCA
-
-CAD CAD
-CAD CAD
-CAD CAD
-CAD
-CAD CAD
-CAD CAD
-CAD
-CAD CAD 
-
-CAD CAD
-CAD CAD
-CAD CAD
-CAD''')
+win.textEdit.setText('''FFFFF''')
 win.open_image(path = 'test-image.png')
 win.show()
 app.exec_()

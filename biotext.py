@@ -14,18 +14,14 @@ import functools
 from style import TextStyle
 from letterset import letter_set
 
-def ave(p1: tuple, p2: tuple, x, y):
-    if (x > p1[0] and y > p1[1]) and (x < p2[0] and y < p2[1]):
-        return x / 2 - y / 2
-    else:
-        return x / 2 + y / 2
+def ave(p1: tuple, p2: tuple):
+    return ((p1[0] + p2[0]) / 2, (p1[1] + p2[1]) / 2)
     
 class TextDraw():
     def __init__(self, style: TextStyle):
         self.im = None
         self.canvas = None
         self.last_pos = []
-        self.random = [-4, 4]
         self.x_margin, self.y_margin = 0, 0
         if style:
             self.style = style
@@ -35,7 +31,7 @@ class TextDraw():
     def func(self, cords: list, t):
         new_cords = []
         for cord in cords:
-            new_cords.append(((cord[0] * self.style.fontsize) / 100 + self.x_margin, (cord[1] * self.style.fontsize) / 100))
+            new_cords.append(((cord[0] * self.style.get_size()) / 100 + self.x_margin, (cord[1] * self.style.get_size()) / 100))
 
         cords = new_cords
         return (
@@ -59,9 +55,6 @@ class TextDraw():
             self.last_pos = [curve[-1][0], curve[-1][1]]
             self.canvas.polygon(curve, self.style.color)
 
-    def rand(self):
-        return randint(self.random[0], self.random[1])
-
     def divide_func(self, xy0, xym, xy: tuple, xy2: tuple):
         return (ave(xy0, xym, xy[0], xy[1]), ave(xy0, xym, xy2[0], xy2[1]))
         return ((xy[0] - xy2[0]) / self.rando(), (xy2[1] - xy2[1]) / self.rando())
@@ -71,26 +64,22 @@ class TextDraw():
         if divides > 0:
             for cord in cords:
                 cords_list = []
-                cords_list.append((cord[0][0]+self.rand(), cord[0][1]+self.rand()))
-                #cords_list.append(self.divide_func(cord[0], cord[2], cord[0], cord[1]))
-                cords_list.append((cord[1][0]+self.rand(), cord[1][1]+self.rand()))
-                cords_list.append((cord[1][0]+self.rand(), cord[1][1]+self.rand()))
-                #cords_list.append(self.divide_func(cord[0], cord[2], cord[1], cord[2]))
-                cords_list.append((cord[2][0], cord[2][1]))
-                cords_list[2] = (cords_list[2][0] + self.style.cursive, cords_list[2][1])
-                cords_list[3] = (cords_list[3][0] + self.style.cursive, cords_list[3][1])
+                cords_list.append((cord[0][0]+self.style.get_curl(), cord[0][1]+self.style.get_curl()))
+                cords_list.append(ave(cord[0], cord[1]))
+                cords_list.append((cord[1][0]+self.style.get_curl(), cord[1][1]+self.style.get_curl()))
+                cords_list.append(ave(cord[1], cord[2]))
+                #cords_list[2] = (cords_list[2][0] + self.style.get_cursive(), cords_list[2][1])
+                #cords_list[3] = (cords_list[3][0] + self.style.get_cursive(), cords_list[3][1])
 
                 new_cords.append(cords_list)
 
                 cords_list = []
-                #cords_list.append(self.divide_func(cord[0], cord[2], cord[1], cord[2]))
-                cords_list.append((cord[2][0], cord[2][1]))
-                cords_list.append((cord[2][0]+self.rand(), cord[2][1]+self.rand()))
-                #cords_list.append(self.divide_func(cord[0], cord[2], cord[2], cord[3]))
-                cords_list.append((cord[3][0]+self.rand(), cord[3][1]+self.rand()))
-                cords_list.append((cord[3][0], cord[3][1]))
-                cords_list[0] = (cords_list[0][0] + self.style.cursive, cords_list[0][1])
-                cords_list[1] = (cords_list[1][0] + self.style.cursive, cords_list[1][1])
+                cords_list.append(ave(cord[1], cord[2]))
+                cords_list.append((cord[2][0]+self.style.get_curl(), cord[2][1]+self.style.get_curl()))
+                cords_list.append(ave(cord[2], cord[3]))
+                cords_list.append((cord[3][0]+self.style.get_curl(), cord[3][1]+self.style.get_curl()))
+                #cords_list[0] = (cords_list[0][0] + self.style.get_cursive(), cords_list[0][1])
+                #cords_list[1] = (cords_list[1][0] + self.style.get_cursive(), cords_list[1][1])
                 
                 new_cords.append(cords_list)
                 
@@ -106,8 +95,8 @@ class TextDraw():
         self.curve(cords, divide)
 
     def draw(self, string: str, divides: int = 0):
-        w = len(string) * self.style.fontsize
-        h = self.style.fontsize
+        w = len(string) * self.style.get_size()
+        h = self.style.get_size() + self.style.get_curl()
         self.x_margin, self.y_margin = 0, 0
 
         self.im = Image.new("RGBA", (w, h), color=(0,0,0,0))
@@ -117,6 +106,10 @@ class TextDraw():
         for char in string:
             if char in letter_set.keys():
                 self.curve(letter_set[char]["curve"], letter_set[char]["divide"] + divides)
+                try:
+                    self.continue_(letter_set[char]["curve1"], letter_set[char]["divide"] + divides)
+                except:
+                    pass
                 self.x_margin += letter_set[char]["width"]
 
         #self.im = self.im.resize((w, h), Image.BILINEAR)
@@ -129,7 +122,7 @@ class BioText(Ui_MainWindow, QMainWindow):
         self.ui = self.setupUi(self)
         self.source = None
         self.draw = TextDraw(text_style)                 # TextDraw Class   // text render class
-        self.image_fullsize = False
+        self.image_fullsize = True
         
         if text_style:
             self.sSize.setValue(text_style.fontsize)
@@ -280,3 +273,19 @@ class BioText(Ui_MainWindow, QMainWindow):
     @value_changed
     def yPos_changed(self):
         self.draw.style.yPos = self.sYPos.value()
+
+    @value_changed
+    def random_fontsize_changed(self):
+        self.draw.style.random.fontsize = [self.sSizeMin.value(), self.sSizeMax.value()]
+
+    @value_changed
+    def random_cursive_changed(self):
+        self.draw.style.random.cursive = [self.sCursiveMin.value(), self.sCursiveMax.value()]
+
+    @value_changed
+    def random_thickness_changed(self):
+        self.draw.style.random.thickness = [self.sThicknessMin.value(), self.sThicknessMax.value()]
+
+    @value_changed
+    def random_curl_changed(self):
+        self.draw.style.random.curl = [self.sCurlMin.value(), self.sCurlMax.value()]
