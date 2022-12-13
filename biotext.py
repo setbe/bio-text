@@ -49,7 +49,7 @@ class TextDraw():
 
             while (t > 0):
                 bezier = self.func(cord, t)
-                curve.append((bezier[0], bezier[1] + math.pow(t, math.cos(t))))
+                curve.append((bezier[0] + self.style.get_thickness(), bezier[1] + math.pow(self.style.get_thickness(), math.cos(t))))
                 t -= 0.01
 
             self.last_pos = [curve[-1][0], curve[-1][1]]
@@ -57,7 +57,6 @@ class TextDraw():
 
     def divide_func(self, xy0, xym, xy: tuple, xy2: tuple):
         return (ave(xy0, xym, xy[0], xy[1]), ave(xy0, xym, xy2[0], xy2[1]))
-        return ((xy[0] - xy2[0]) / self.rando(), (xy2[1] - xy2[1]) / self.rando())
 
     def divide(self, cords: list, divides):
         new_cords = []
@@ -68,9 +67,6 @@ class TextDraw():
                 cords_list.append(ave(cord[0], cord[1]))
                 cords_list.append((cord[1][0]+self.style.get_curl(), cord[1][1]+self.style.get_curl()))
                 cords_list.append(ave(cord[1], cord[2]))
-                #cords_list[2] = (cords_list[2][0] + self.style.get_cursive(), cords_list[2][1])
-                #cords_list[3] = (cords_list[3][0] + self.style.get_cursive(), cords_list[3][1])
-
                 new_cords.append(cords_list)
 
                 cords_list = []
@@ -78,9 +74,6 @@ class TextDraw():
                 cords_list.append((cord[2][0]+self.style.get_curl(), cord[2][1]+self.style.get_curl()))
                 cords_list.append(ave(cord[2], cord[3]))
                 cords_list.append((cord[3][0]+self.style.get_curl(), cord[3][1]+self.style.get_curl()))
-                #cords_list[0] = (cords_list[0][0] + self.style.get_cursive(), cords_list[0][1])
-                #cords_list[1] = (cords_list[1][0] + self.style.get_cursive(), cords_list[1][1])
-                
                 new_cords.append(cords_list)
                 
             return self.divide(new_cords, divides-1)
@@ -90,30 +83,40 @@ class TextDraw():
         self.bezier(self.divide(cords, divide))
 
     def continue_(self, cords: list, divide = 0):
-        cords[0][0] = self.last_pos[0]
-        cords[0][1] = self.last_pos[1]
+        cords[0][0] = (self.last_pos[0] - self.style.get_size(), self.last_pos[1])
         self.curve(cords, divide)
 
-    def draw(self, string: str, divides: int = 0):
+    def draw(self, string: str, divides: int = 0, is_export = False):
+        self.style.set_export(is_export)
+    
         w = len(string) * self.style.get_size()
         h = self.style.get_size() + self.style.get_curl()
         self.x_margin, self.y_margin = 0, 0
 
         self.im = Image.new("RGBA", (w, h), color=(0,0,0,0))
         self.canvas = ImageDraw.Draw(self.im, "RGBA")
-        #self.canvas.rectangle((0,0,w,h), (70, 0, 0, 60))
+        self.canvas.rectangle((0,0,w,h), (70, 0, 0, 60))
 
         for char in string:
             if char in letter_set.keys():
-                self.curve(letter_set[char]["curve"], letter_set[char]["divide"] + divides)
                 try:
-                    self.continue_(letter_set[char]["curve1"], letter_set[char]["divide"] + divides)
+                    self.curve(letter_set[char]["curve"], letter_set[char]["divide"] + divides)
                 except:
-                    pass
-                self.x_margin += letter_set[char]["width"]
+                    try:
+                        self.continue_(letter_set[char]["curve1"], letter_set[char]["divide"] + divides)
+                    except:
+                        pass
+                self.x_margin += self.style.get_size() / 2
 
-        #self.im = self.im.resize((w, h), Image.BILINEAR)
-        self.im = self.im.filter(ImageFilter.SMOOTH_MORE)
+        if is_export:
+            blur = self.im.filter(ImageFilter.GaussianBlur(2))
+            print("export")
+            self.im.paste(blur)
+            self.im = self.im.resize((w // self.style.is_export, h // self.style.is_export), Image.BICUBIC)
+        else:
+            self.im = self.im.filter(ImageFilter.SMOOTH_MORE)
+
+        self.style.set_export(False)
         return self.im
 
 class BioText(Ui_MainWindow, QMainWindow):
@@ -150,14 +153,14 @@ class BioText(Ui_MainWindow, QMainWindow):
         self.sThickness.valueChanged.connect(self.thickness_changed)
         self.sCurl.valueChanged.connect(self.curl_changed)
 
-        self.sSizeMin.valueChanged.connect(self.spinbox_changed)
-        self.sSizeMax.valueChanged.connect(self.spinbox_changed)
-        self.sCursiveMin.valueChanged.connect(self.spinbox_changed)
-        self.sCursiveMax.valueChanged.connect(self.spinbox_changed)
-        self.sThicknessMin.valueChanged.connect(self.spinbox_changed)
-        self.sThicknessMax.valueChanged.connect(self.spinbox_changed)
-        self.sCurlMin.valueChanged.connect(self.spinbox_changed)
-        self.sCurlMax.valueChanged.connect(self.spinbox_changed)
+        self.sSizeMin.valueChanged.connect(self.random_fontsize_changed)
+        self.sSizeMax.valueChanged.connect(self.random_fontsize_changed)
+        self.sCursiveMin.valueChanged.connect(self.random_cursive_changed)
+        self.sCursiveMax.valueChanged.connect(self.random_cursive_changed)
+        self.sThicknessMin.valueChanged.connect(self.random_thickness_changed)
+        self.sThicknessMax.valueChanged.connect(self.random_thickness_changed)
+        self.sCurlMin.valueChanged.connect(self.random_curl_changed)
+        self.sCurlMax.valueChanged.connect(self.random_curl_changed)
         self.sDivide.valueChanged.connect(self.spinbox_changed)
         
         # spinboxes -- Text
@@ -215,9 +218,12 @@ class BioText(Ui_MainWindow, QMainWindow):
             imagePath, _ = QFileDialog.getSaveFileName(self,"Export to...","","png;;jpg;;gif;;bpm;;jpeg;;webp")
 
             if imagePath:
-                overlay = self.draw.draw(self.textEdit.toPlainText().split("\n")[0])
-                source = self.source
-                source.paste(overlay, (self.sXPos.value(), self.sYPos.value()), overlay)
+                y_margin = 0
+                source = self.source.copy()
+                for string in self.textEdit.toPlainText().split('\n'):
+                    overlay = self.draw.draw(string, self.sDivide.value(), is_export=True)
+                    source.paste(overlay, (self.sXPos.value(), self.sYPos.value() + y_margin), overlay)
+                    y_margin += self.draw.style.fontsize
 
                 _ = _.strip()
                 if _ in ['jpg', 'jpeg', 'bmp']:

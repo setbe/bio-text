@@ -24,17 +24,25 @@ class TextStyle():
         else:
             self.random = TextRandom()
 
+        self.is_export = 1
+
+    def set_export(self, value: bool):
+        if value: 
+            self.is_export = 2
+        else:
+            self.is_export = 1
+
     def rand(self, list_random):
-        return randint(list_random[0], list_random[1])
+        return randint(list_random[0], list_random[1]) * self.is_export
 
     def get_size(self):
-        return self.fontsize + self.rand(self.random.fontsize)
+        return (self.fontsize + self.rand(self.random.fontsize)) * self.is_export
 
     def get_cursive(self):
-        return self.cursive + self.rand(self.random.cursive)
+        return (self.cursive + self.rand(self.random.cursive)) * self.is_export
 
     def get_thickness(self):
-        return self.thickness + self.rand(self.random.thickness)
+        return (self.thickness + self.rand(self.random.thickness)) * self.is_export
 
     def get_curl(self):
-        return self.curl + self.rand(self.random.curl)
+        return (self.curl + self.rand(self.random.curl)) * self.is_export
