@@ -101,7 +101,7 @@ QScrollBar::sub-line:horizontal, QScrollBar::add-line:horizontal, QScrollBar::up
 
 QScrollBar::handle {
 	border: 0px;
-	border-radius: 8px;
+	border-radius: 6px;
 }
 
 QScrollBar::handle:hover {
@@ -487,7 +487,7 @@ QMenu::indicator {
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>-345</y>
+          <y>-224</y>
           <width>437</width>
           <height>600</height>
          </rect>
@@ -574,7 +574,7 @@ QListView {
                <number>1</number>
               </property>
               <property name="value">
-               <number>3</number>
+               <number>2</number>
               </property>
              </widget>
             </item>
@@ -649,7 +649,7 @@ QListView {
                <number>24</number>
               </property>
               <property name="value">
-               <number>5</number>
+               <number>2</number>
               </property>
              </widget>
             </item>
@@ -679,6 +679,9 @@ QListView {
               </property>
               <property name="maximum">
                <number>600</number>
+              </property>
+              <property name="singleStep">
+               <number>2</number>
               </property>
               <property name="value">
                <number>48</number>
@@ -765,13 +768,13 @@ QListView {
                <set>Qt::AlignCenter</set>
               </property>
               <property name="minimum">
-               <number>-100</number>
+               <number>0</number>
               </property>
               <property name="maximum">
                <number>100</number>
               </property>
               <property name="value">
-               <number>5</number>
+               <number>0</number>
               </property>
              </widget>
             </item>
@@ -787,13 +790,13 @@ QListView {
                <set>Qt::AlignCenter</set>
               </property>
               <property name="minimum">
-               <number>-100</number>
+               <number>0</number>
               </property>
               <property name="maximum">
                <number>100</number>
               </property>
               <property name="value">
-               <number>5</number>
+               <number>0</number>
               </property>
              </widget>
             </item>
@@ -812,10 +815,10 @@ QListView {
                <number>-100</number>
               </property>
               <property name="maximum">
-               <number>100</number>
+               <number>0</number>
               </property>
               <property name="value">
-               <number>-5</number>
+               <number>0</number>
               </property>
              </widget>
             </item>
@@ -867,7 +870,7 @@ QListView {
                <number>0</number>
               </property>
               <property name="value">
-               <number>-1</number>
+               <number>0</number>
               </property>
              </widget>
             </item>
@@ -900,10 +903,10 @@ QListView {
                <number>-100</number>
               </property>
               <property name="maximum">
-               <number>100</number>
+               <number>0</number>
               </property>
               <property name="value">
-               <number>-5</number>
+               <number>0</number>
               </property>
              </widget>
             </item>
@@ -922,10 +925,10 @@ QListView {
                <number>-100</number>
               </property>
               <property name="maximum">
-               <number>100</number>
+               <number>0</number>
               </property>
               <property name="value">
-               <number>-5</number>
+               <number>0</number>
               </property>
              </widget>
             </item>
@@ -941,13 +944,13 @@ QListView {
                <set>Qt::AlignCenter</set>
               </property>
               <property name="minimum">
-               <number>-100</number>
+               <number>0</number>
               </property>
               <property name="maximum">
                <number>100</number>
               </property>
               <property name="value">
-               <number>1</number>
+               <number>0</number>
               </property>
              </widget>
             </item>
@@ -992,13 +995,13 @@ QListView {
                <set>Qt::AlignCenter</set>
               </property>
               <property name="minimum">
-               <number>-100</number>
+               <number>0</number>
               </property>
               <property name="maximum">
                <number>100</number>
               </property>
               <property name="value">
-               <number>5</number>
+               <number>0</number>
               </property>
              </widget>
             </item>
