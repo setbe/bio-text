@@ -46,7 +46,13 @@ class TextDraw():
     def divide_func(self, xy0, xym, xy: tuple, xy2: tuple):
         return (ave(xy0, xym, xy[0], xy[1]), ave(xy0, xym, xy2[0], xy2[1]))
 
-    def divide(self, cords: list, divide):
+    def divide(self, cords: list, local_margin: list, divide = 0):
+        for i in cords:
+            for j in i:
+                print(local_margin)
+                j[0] += local_margin[0]
+                j[1] += local_margin[1]
+
         new_cords = []
         if divide > 0:
             for cord in cords:
@@ -67,8 +73,8 @@ class TextDraw():
             return self.divide(new_cords, divide-1)
         return cords
 
-    def curve(self, cords: list, divide = 0):
-        self.bezier(self.divide(cords, divide))
+    def curve(self, cords: list, local_margin, divide = 0):
+        self.bezier(self.divide(cords, local_margin, divide))
 
     def curve0(self, cords, divide):
         new_cords = []
@@ -92,15 +98,23 @@ class TextDraw():
         cords[0][0] = (self.last_pos[0] - self.x_margin, self.last_pos[1])
         self.curve(cords, divide)
 
-    def draw_char(self, char, divide = 0):
-        if "depend" in self.style.font[char].keys():
+    def draw_char(self, char, resize = 0, local_margin = [0, 0], divide = 0):
+        keys = self.style.font[char].keys()
+        self.style.fontsize += resize
+        if "margin" in keys:
+            local_margin = self.style.font[char]["margin"]
+            print("local: ", local_margin)
+        if "reduce" in keys:
+            self.draw_char(self.style.font[char]["reduce"][0], self.style.font[char]["reduce"][1])
+        elif "depend" in keys:
             self.draw_char(self.style.font[char]["depend"])
-        if "right" in self.style.font[char].keys():
+        if "right" in keys:
             self.x_margin += self.style.font[char]["right"]
-        if "left" in self.style.font[char].keys():
+        if "left" in keys:
             self.x_margin += self.style.font[char]["left"]
-        if "curve" in self.style.font[char].keys():
-            self.curve(self.style.font[char]["curve"], divide)
+        if "curve" in keys:
+            self.curve(self.style.font[char]["curve"], local_margin, divide = divide)
+        self.style.fontsize -= resize
 
     def draw(self, string: str, divide: int = 0, is_export = False):
         w = len(string) * self.style.get_size()
@@ -113,7 +127,7 @@ class TextDraw():
 
         for char in string:
             if char in self.style.font.keys():
-                self.draw_char(char, divide)
+                self.draw_char(char, divide = divide)
                 self.x_margin += self.style.get_size() / 2
 
         if is_export:
