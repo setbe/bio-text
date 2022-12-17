@@ -11,6 +11,8 @@ class TextDraw():
         self.curve_quality = 0.05
 
         self.offset_x, self.offset_y = 0, 0
+        self.local_size = [1, 1]
+        self.local_offset = [0, 0]
 
     '''
     returns point for quadratic bezier
@@ -19,7 +21,8 @@ class TextDraw():
     def bezier_func(self, t, points) -> tuple:      # quadratic bezier function
         resized_points = []
         for point in points:
-            resized_points.append(((point[0] * self.style.get_size()) / 100 + self.offset_x, (point[1] * self.style.get_size()) / 100 + self.offset_y))
+            resized_points.append(((point[0] * self.style.get_size()) / 100 / self.local_size[0] + self.offset_x + self.local_offset[0],
+            (point[1] * self.style.get_size()) / 100 / self.local_size[1] + self.offset_y + self.local_offset[1] ))
 
         return (
             math.pow((1 - t), 3) * resized_points[0][0] + 3* math.pow((1-t), 2) * t * 
@@ -82,12 +85,27 @@ class TextDraw():
     def draw_char(self, char, no_margin = False) -> None:
         value = self.style.font[char]
         keys = value.keys()
+        if "curl" in keys:
+            self.style.local_curl = value["curl"]
+        if "margin-up" in keys:
+            self.local_offset[1] = value["margin-up"]
         if "depend-on" in keys:
+            if "depend-offset" in keys:
+                self.local_offset = value["depend-offset"]
             self.draw_char(value["depend-on"], no_margin=True)
+        if "reduce" in keys:
+            self.local_size = value["reduce"][1]
+            self.curve(self.curve_from(value["reduce"][0]))
         if "curve" in keys:
             self.curve(value["curve"])
         if not no_margin and "width" in keys:
             self.offset_x += value["width"]
+        self.local_offset = [0, 0]
+        self.local_size = [1, 1]
+        self.style.local_curl = 0
+
+    def curve_from(self, char):
+        return self.style.font[char]["curve"]
             
 
     '''
@@ -96,7 +114,7 @@ class TextDraw():
     '''
     def draw(self, string: str) -> Image:
         w = len(string) * self.style.get_size()
-        h = self.style.get_size() + self.style.get_curl() + 10
+        h = self.style.get_size() + self.style.get_curl() + 40
         self.offset_x, self.offset_y = 0, 0
 
         self.im = Image.new("RGBA", (int(w), int(h)), color=(0,0,0,0))

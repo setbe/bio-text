@@ -19,8 +19,9 @@ class TextStyle():
 
         self.xPos = xPos
         self.yPos = yPos
-        # random
         self.random = random if random else TextRandom()
+
+        self.local_curl = 0
 
     def rand(self, list_random):
         return randint(list_random[0], list_random[1])
@@ -35,7 +36,10 @@ class TextStyle():
         return self.thickness + self.rand(self.random.thickness)
 
     def get_curl(self):
-        return self.rand([self.random.curl[0] - self.curl, self.random.curl[1] + self.curl])
+        try:
+            return self.rand([self.random.curl[0] - self.curl - self.local_curl, self.random.curl[1] + self.curl + self.local_curl])
+        except:
+            return self.rand([-1, 1])
 
     def set_font(self, fontname):
-        self.font = load_handwriting(fontname)
+        self.font = load_handwriting(fontname, py_file=True)
