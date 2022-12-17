@@ -24,19 +24,18 @@ class BioText(Ui_MainWindow, QMainWindow):
 
     def redraw_overlay(self):
         if self.source:
-            if self.textEdit.toPlainText():
-                y_margin = 0
-                source = self.source.copy()
-                for string in self.textEdit.toPlainText().split('\n'):
-                    overlay = self.draw.draw(string, self.sDivide.value())
-                    source.paste(overlay, (self.sXPos.value(), self.sYPos.value() + y_margin), overlay)
-                    y_margin += self.draw.style.fontsize
-                source = ImageQt(source)
+            y_margin = 0
+            source = self.source.copy()
+            for string in self.textEdit.toPlainText().split('\n'):
+                overlay = self.draw.draw(string)
+                source.paste(overlay, (self.sXPos.value(), self.sYPos.value() + y_margin), overlay)
+                y_margin += self.draw.style.fontsize
+            source = ImageQt(source)
 
-                pixmap = QPixmap.fromImage(source)
-                if not self.image_fullsize:
-                    pixmap = pixmap.scaled(self.frame_2.width() - 20, self.frame_2.height() - 30, QtCore.Qt.KeepAspectRatio)
-                self.lImage.setPixmap(pixmap)
+            pixmap = QPixmap.fromImage(source)
+            if not self.image_fullsize:
+                pixmap = pixmap.scaled(self.frame_2.width() - 20, self.frame_2.height() - 30, QtCore.Qt.KeepAspectRatio)
+            self.lImage.setPixmap(pixmap)
 
     def open_image(self, event = None, path = None):
         if not self.source:
@@ -73,7 +72,7 @@ class BioText(Ui_MainWindow, QMainWindow):
                 y_margin = 0
                 source = self.source.copy()
                 for string in self.textEdit.toPlainText().split('\n'):
-                    overlay = self.draw.draw(string, self.sDivide.value(), is_export=True)
+                    overlay = self.draw.draw(string)
                     source.paste(overlay, (self.sXPos.value(), self.sYPos.value() + y_margin), overlay)
                     y_margin += self.draw.style.fontsize
 

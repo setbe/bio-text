@@ -35,7 +35,7 @@ class TextStyle():
         return self.thickness + self.rand(self.random.thickness)
 
     def get_curl(self):
-        return self.curl + self.rand(self.random.curl)
+        return self.rand([self.random.curl[0] - self.curl, self.random.curl[1] + self.curl])
 
     def set_font(self, fontname):
         self.font = load_handwriting(fontname)

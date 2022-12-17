@@ -10,7 +10,7 @@ json file must looks like:
 '''
 
 '''
-json file content may looks like:
+content may looks like:
 {
     "A": {
         "connectable": "down",
