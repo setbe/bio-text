@@ -21,11 +21,7 @@ content may looks like:
 }
 '''
 
-def load_handwriting(filename_without_format: str, py_file = False):
-    if py_file:
-        from handwritings.miquy import miquy
-        return miquy
-
-    with open("handwritings\\" + filename_without_format + ".json", 'r') as f:
+def load_handwriting(filename_without_format: str):
+    with open("handwritings\\" + filename_without_format + ".json", 'r', encoding="utf-8") as f:
         data = json.load(f)
     return data

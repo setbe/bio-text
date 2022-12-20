@@ -42,4 +42,4 @@ class TextStyle():
             return self.rand([-1, 1])
 
     def set_font(self, fontname):
-        self.font = load_handwriting(fontname, py_file=True)
+        self.font = load_handwriting(fontname)

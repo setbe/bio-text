@@ -79,6 +79,9 @@ class TextDraw():
             curled_spline.append([spline[i][0] + self.style.get_curl(), spline[i][1] + self.style.get_curl()])
         return curled_spline
 
+    def connect(self, char):
+        pass
+
     '''
     draws character
     '''
@@ -92,7 +95,8 @@ class TextDraw():
         if "depend-on" in keys:
             if "depend-offset" in keys:
                 self.local_offset = value["depend-offset"]
-            self.draw_char(value["depend-on"], no_margin=True)
+            for c in value["depend-on"]:
+                self.draw_char(c, no_margin=True)
         if "reduce" in keys:
             self.local_size = value["reduce"][1]
             self.curve(self.curve_from(value["reduce"][0]))
