@@ -8,9 +8,9 @@ style = TextStyle(fontname="miquy", fontsize=100, xPos=99, yPos=50, curl=3)
 app = QApplication(argv)
 win = BioText(style)
 
-win.textEdit.setText('''ззз yyg''')
+win.textEdit.setText('''1234567890
+1234567890
+1234567890''')
 win.open_image(path = 'test-image.png')
 win.show()
 app.exec_()
-
-# ї м т ч 
