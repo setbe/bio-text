@@ -1,7 +1,8 @@
 #pragma once
 #include <imgui.h>
-#include "DockWidget.h"
 #include <imgui_internal.h>
+#include <memory>
+#include "DockWidget.h"
 
 namespace bt
 {
@@ -12,8 +13,5 @@ namespace bt
 		~SceneView();
 
 		void Render() override;
-
-	private:
-		bool show_popup;
 	};
 }

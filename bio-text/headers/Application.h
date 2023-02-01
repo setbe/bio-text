@@ -8,16 +8,11 @@
 
 namespace bt 
 {
-	class App
+	class App : public MainWindow
 	{
 	public:
 		App();
 		~App();
-
-		void Run();
-
-	private:
-		MainWindow* window;
 	};
 }
 

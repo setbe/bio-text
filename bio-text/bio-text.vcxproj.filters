@@ -72,6 +72,9 @@
     <ClCompile Include="sources\GUI\StyleView.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
+    <ClCompile Include="sources\stb.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\Application.h">
@@ -101,5 +104,13 @@
     <ClInclude Include="sources\GUI\StyleView.h">
       <Filter>GUI</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="bio-text.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

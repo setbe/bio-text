@@ -1,9 +1,10 @@
+#include "logo.h"
 #include "Application.h"
 
 int main(int, char**)
 {
     bt::App app;
-    app.Run();
+    app.Loop();
 
     return 0;
 }

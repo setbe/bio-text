@@ -2,6 +2,8 @@
 
 namespace bt 
 {
+    extern unsigned char logo[];
+
     void delay()
     {
         auto start = std::chrono::high_resolution_clock::now();
@@ -62,6 +64,12 @@ namespace bt
 
                 ImGui_ImplGlfw_InitForOpenGL(this->window, true);
                 ImGui_ImplOpenGL3_Init(glsl_version);
+
+                GLFWimage img;
+                img.height = 32;
+                img.width = 32;
+                img.pixels = logo;
+                glfwSetWindowIcon(window, 1, &img);
 
                 this->clear_color = ImVec4(0.1f, 0.1f, 0.1f, 1.00f);
                 this->success = true;
@@ -133,10 +141,6 @@ namespace bt
         ImGui::SetNextWindowSize(viewport->Size);
         ImGui::SetNextWindowViewport(viewport->ID);
 
-        //ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-        //ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-        //ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-
         ImGuiID id = ImGui::DockSpaceOverViewport(nullptr, ImGuiDockNodeFlags_NoDockingInCentralNode | ImGuiDockNodeFlags_PassthruCentralNode, nullptr);
         ImGuiDockNode* node = ImGui::DockBuilderGetCentralNode(id);
 
@@ -159,7 +163,6 @@ namespace bt
         centralAlways.DockNodeFlagsOverrideSet |= ImGuiDockNodeFlags_NoTabBar | ImGuiDockNodeFlags_NoDockingOverMe;
         ImGui::SetNextWindowClass(&centralAlways);
         ImGui::SetNextWindowDockID(node->ID, ImGuiCond_Always);
-        //ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0, 0 });
         scene_view->Render();
         image_view->Render();
         style_view->Render();

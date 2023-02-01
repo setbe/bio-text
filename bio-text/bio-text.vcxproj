@@ -182,6 +182,7 @@
     <ClCompile Include="sources\GUI\StyleView.cpp" />
     <ClCompile Include="sources\main.cpp" />
     <ClCompile Include="sources\MainWindow.cpp" />
+    <ClCompile Include="sources\stb.cpp" />
     <ClCompile Include="sources\Style.cpp" />
     <ClCompile Include="sources\Window.cpp" />
   </ItemGroup>
@@ -192,9 +193,13 @@
     <ClInclude Include="headers\MainWindow.h" />
     <ClInclude Include="headers\Style.h" />
     <ClInclude Include="headers\Window.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="sources\GUI\ImageView.h" />
     <ClInclude Include="sources\GUI\SceneView.h" />
     <ClInclude Include="sources\GUI\StyleView.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="bio-text.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
