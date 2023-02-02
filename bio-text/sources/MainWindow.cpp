@@ -73,9 +73,11 @@ namespace bt
 
                 this->clear_color = ImVec4(0.1f, 0.1f, 0.1f, 1.00f);
                 this->success = true;
+                
+                gladLoadGL();
+
                 this->scene_view = std::make_unique<SceneView>();
-                this->image_view = std::make_unique<ImageView>();
-                this->style_view = std::make_unique<StyleView>();
+                this->text_view = std::make_unique<TextView>();
             }
             else
             {
@@ -122,6 +124,7 @@ namespace bt
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 
+
         if (this->io->ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
         {
             GLFWwindow* backup_current_context = glfwGetCurrentContext();
@@ -151,30 +154,67 @@ namespace bt
             ImGui::DockBuilderRemoveNode(id);
             ImGui::DockBuilderAddNode(id, ImGuiDockNodeFlags_PassthruCentralNode | ImGuiDockNodeFlags_DockSpace);
             ImGui::DockBuilderSetNodeSize(id, viewport->Size);
-            //ImGuiID left_id = ImGui::DockBuilderSplitNode(id, ImGuiDir_Left, 0.3f, nullptr, &id);
-            //ImGuiId r_id;
-            ImGuiID right_id = ImGui::DockBuilderSplitNode(id, ImGuiDir_Right, 0.3f, nullptr, &id);
+            ImGuiID left_id = ImGui::DockBuilderSplitNode(id, ImGuiDir_Left, 0.2f, nullptr, &id);
+            ImGuiID right_id = ImGui::DockBuilderSplitNode(id, ImGuiDir_Right, 0.25f, nullptr, &id);
 
-            ImGui::DockBuilderDockWindow(image_view->getName(), right_id);
-            ImGui::DockBuilderDockWindow(style_view->getName(), right_id);
+            ImGui::DockBuilderDockWindow(scene_view->style_view->getName(), right_id);
+            ImGui::DockBuilderDockWindow(text_view->getName(), left_id);
             ImGui::DockBuilderFinish(id);
         }
         ImGuiWindowClass centralAlways = {};
-        centralAlways.DockNodeFlagsOverrideSet |= ImGuiDockNodeFlags_NoTabBar | ImGuiDockNodeFlags_NoDockingOverMe;
+        centralAlways.DockNodeFlagsOverrideSet |= ImGuiDockNodeFlags_NoTabBar;
         ImGui::SetNextWindowClass(&centralAlways);
         ImGui::SetNextWindowDockID(node->ID, ImGuiCond_Always);
         scene_view->Render();
-        image_view->Render();
-        style_view->Render();
+        ImGui::PushStyleColor(ImGuiCol_WindowBg, ColorFromBytes(37, 37, 38));
+        ImGui::PushStyleColor(ImGuiCol_FrameBg, ColorFromBytes(37, 37, 38));
+        scene_view->style_view->Render();
+        text_view->Render();
+        ImGui::PopStyleColor(2);
+
+        RenderMenu();
     }
 
-    void MainWindow::RenderGL()
+    void MainWindow::RenderMenu()
     {
+        ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, { 15.0f, 8.0f });
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+        if (ImGui::BeginMainMenuBar())
+        {
+            if (ImGui::BeginMenu("File"))
+            {
+                if (ImGui::BeginMenu("Open"))
+                {
+                    ImGui::MenuItem("Image", "Ctrl + O");
+                    ImGui::MenuItem("Project", "Ctrl + P");
+                    ImGui::MenuItem("Font", "Ctrl + [");
+                    ImGui::EndMenu();
+                }
 
+                ImGui::EndMenu();
+            }
+
+            if (ImGui::BeginMenu("Edit"))
+            {
+                ImGui::MenuItem("something");
+
+                ImGui::EndMenu();
+            }
+
+            if (ImGui::BeginMenu("View"))
+            {
+                ImGui::Checkbox("Style##checkbox", nullptr);
+
+                ImGui::EndMenu();
+            }
+            ImGui::EndMainMenuBar();
+        }
+        ImGui::PopStyleVar(2);
     }
 
     MainWindow::~MainWindow()
     {
+        scene_view->Delete();
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplGlfw_Shutdown();
         ImGui::DestroyContext();

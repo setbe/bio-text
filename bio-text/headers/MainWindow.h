@@ -1,5 +1,6 @@
 #ifndef MAIN_WINDOW_H
 #define MAIN_WINDOW_H
+#include "glad/glad.h"
 #include "imgui.h"
 #include "backends/imgui_impl_glfw.h"
 #include "backends/imgui_impl_opengl3.h"
@@ -8,12 +9,12 @@
 #include <vector>
 #define GL_SILENCE_DEPRECATION
 #include "GLFW/glfw3.h"
+
 #include "Style.h"
 #include "Window.h"
 
 #include "SceneView.h"
-#include "ImageView.h"
-#include "StyleView.h"
+#include "TextView.h"
 #include <chrono>
 #include <thread>
 
@@ -49,7 +50,7 @@ namespace bt {
         void init(Window* window);
 
         void RenderGUI();
-        void RenderGL();
+        void RenderMenu();
 
         GLFWwindow* window;
         bool success;
@@ -57,8 +58,7 @@ namespace bt {
         ImVec4 clear_color;
         ImGuiIO* io;
         std::unique_ptr<SceneView> scene_view;
-        std::unique_ptr<ImageView> image_view;
-        std::unique_ptr<StyleView> style_view;
+        std::unique_ptr<TextView> text_view;
     };
 
     static void OnKeyCallback(GLFWwindow* window, int key, int scan_code, int action, int mods);

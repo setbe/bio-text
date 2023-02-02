@@ -10,10 +10,11 @@ namespace bt
 	class StyleView : public DockWidget
 	{
 	public:
-		StyleView() : DockWidget("Style") {}
+		StyleView(Style* style_) : DockWidget("Style"), style(style_) { }
 
 		void Render() override;
 
-		Style style;
+	private:
+		Style* style;
 	};
 }

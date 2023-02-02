@@ -4,6 +4,7 @@
 #include <stdint.h>
 
 namespace bt {
+	constexpr ImVec4 ColorFromBytes(uint8_t r, uint8_t g, uint8_t b);
 	void UseDarkTheme();
 
 	class Style

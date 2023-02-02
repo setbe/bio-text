@@ -111,7 +111,7 @@ namespace bt {
 			curl_random = (float)fontsize / 10;
 	}
 
-	constexpr auto ColorFromBytes = [](uint8_t r, uint8_t g, uint8_t b)
+	constexpr ImVec4 ColorFromBytes(uint8_t r, uint8_t g, uint8_t b)
 {
     return ImVec4((float)r / 255.0f, (float)g / 255.0f, (float)b / 255.0f, 1.0f);
 };
@@ -119,7 +119,7 @@ namespace bt {
 	void UseDarkTheme()
 	{
 		ImVec4* colors = ImGui::GetStyle().Colors;
-		const ImVec4 bgColor = ColorFromBytes(37, 37, 38);
+		const ImVec4 bgColor = ColorFromBytes(20, 20, 21);
 		const ImVec4 lightBgColor = ColorFromBytes(82, 82, 85);
 		const ImVec4 veryLightBgColor = ColorFromBytes(90, 90, 95);
 
@@ -146,7 +146,7 @@ namespace bt {
 		colors[ImGuiCol_TitleBgActive] = bgColor;
 		colors[ImGuiCol_TitleBgCollapsed] = bgColor;
 		colors[ImGuiCol_MenuBarBg] = bgColor;
-		colors[ImGuiCol_ScrollbarBg] = bgColor;
+		colors[ImGuiCol_ScrollbarBg] = ColorFromBytes(37, 37, 38);
 		colors[ImGuiCol_ScrollbarGrab] = lightBgColor;
 		colors[ImGuiCol_ScrollbarGrabHovered] = veryLightBgColor;
 		colors[ImGuiCol_ScrollbarGrabActive] = veryLightBgColor;
@@ -156,10 +156,10 @@ namespace bt {
 		colors[ImGuiCol_Button] = panelColor;
 		colors[ImGuiCol_ButtonHovered] = panelHoverColor;
 		colors[ImGuiCol_ButtonActive] = panelHoverColor;
-		colors[ImGuiCol_Header] = bgColor;
+		colors[ImGuiCol_Header] = ColorFromBytes(47, 47, 48);
 		colors[ImGuiCol_HeaderHovered] = panelHoverColor;
 		colors[ImGuiCol_HeaderActive] = panelActiveColor;
-		colors[ImGuiCol_Separator] = borderColor;
+		colors[ImGuiCol_Separator] = bgColor;
 		colors[ImGuiCol_SeparatorHovered] = borderColor;
 		colors[ImGuiCol_SeparatorActive] = panelHoverColor;
 		colors[ImGuiCol_ResizeGrip] = panelColor;
@@ -172,23 +172,25 @@ namespace bt {
 		colors[ImGuiCol_DragDropTarget] = bgColor;
 		colors[ImGuiCol_NavHighlight] = bgColor;
 		colors[ImGuiCol_DockingPreview] = panelActiveColor;
-		colors[ImGuiCol_Tab] = bgColor;
-		colors[ImGuiCol_TabActive] = panelActiveColor;
-		colors[ImGuiCol_TabUnfocused] = bgColor;
-		colors[ImGuiCol_TabUnfocusedActive] = panelActiveColor;
-		colors[ImGuiCol_TabHovered] = panelHoverColor;
+		colors[ImGuiCol_Tab] = ColorFromBytes(25, 25, 26);
+		colors[ImGuiCol_TabActive] = ColorFromBytes(37, 37, 38);
+		colors[ImGuiCol_TabUnfocused] = ColorFromBytes(25, 25, 26);
+		colors[ImGuiCol_TabUnfocusedActive] = ColorFromBytes(25, 25, 26);
+		colors[ImGuiCol_TabHovered] = ColorFromBytes(37, 37, 38);
 
 		// Docking
 		colors[ImGuiCol_DockingPreview] = ColorFromBytes(0, 85, 70);
 
 		auto& style = ImGui::GetStyle();
-		style.TabRounding = 0.0f;
+		style.TabRounding = 3.0f;
 		style.ScrollbarRounding = 5.0f;
 		style.WindowRounding = 4.0f;
 		style.GrabRounding = 2.0f;
 		style.FrameRounding = 4.0f;
-		style.PopupRounding = 0.0f;
+		style.PopupRounding = 4.0f;
 		style.ChildRounding = 4.0f;
 		style.WindowMinSize = {220, 100};
+		style.ItemInnerSpacing = { 10.0f, 7.0f };
+		style.FramePadding = { 8.0f, 5.0f };
 	}
 }

@@ -176,27 +176,41 @@
     <ClCompile Include="include\imgui\imgui_widgets.cpp" />
     <ClCompile Include="sources\Application.cpp" />
     <ClCompile Include="sources\DockWidget.cpp" />
+    <ClCompile Include="sources\EBO.cpp" />
+    <ClCompile Include="sources\glad.c" />
     <ClCompile Include="sources\GUIObject.cpp" />
     <ClCompile Include="sources\GUI\ImageView.cpp" />
     <ClCompile Include="sources\GUI\SceneView.cpp" />
     <ClCompile Include="sources\GUI\StyleView.cpp" />
+    <ClCompile Include="sources\GUI\TextView.cpp" />
     <ClCompile Include="sources\main.cpp" />
     <ClCompile Include="sources\MainWindow.cpp" />
+    <ClCompile Include="sources\shaderClass.cpp" />
     <ClCompile Include="sources\stb.cpp" />
     <ClCompile Include="sources\Style.cpp" />
+    <ClCompile Include="sources\Texture.cpp" />
+    <ClCompile Include="sources\VAO.cpp" />
+    <ClCompile Include="sources\VBO.cpp" />
     <ClCompile Include="sources\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\Application.h" />
     <ClInclude Include="headers\DockWidget.h" />
+    <ClInclude Include="headers\EBO.h" />
     <ClInclude Include="headers\GUIObject.h" />
     <ClInclude Include="headers\MainWindow.h" />
+    <ClInclude Include="headers\shaderClass.h" />
     <ClInclude Include="headers\Style.h" />
+    <ClInclude Include="headers\Texture.h" />
+    <ClInclude Include="headers\VAO.h" />
+    <ClInclude Include="headers\VBO.h" />
     <ClInclude Include="headers\Window.h" />
+    <ClInclude Include="include\KHR\khrplatform.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="sources\GUI\ImageView.h" />
     <ClInclude Include="sources\GUI\SceneView.h" />
     <ClInclude Include="sources\GUI\StyleView.h" />
+    <ClInclude Include="sources\GUI\TextView.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="bio-text.rc" />
