@@ -1,5 +1,8 @@
-# bio-text
-Generate unique handwrited text. Good for abstracts, essay, summary, precis, conspectus
-![bio-text-logo](https://user-images.githubusercontent.com/70776479/215784067-5c399817-6924-4390-bd10-4e6f74133208.png)
+![btlg48](https://user-images.githubusercontent.com/70776479/216152516-ecfd87b3-d594-479a-a8f1-3b9dddb8e29e.png)
 
-Soon
+# BioText
+Generate unique handwrited text. Good for abstracts, essay, summary, precis, conspectus
+
+
+
+### Soon
