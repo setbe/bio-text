@@ -27,8 +27,15 @@ namespace bt {
 
 		const char* getName();
 
-		virtual void Render() {}
+		void Render();
+
+		bool* getShow() { return &show; }
+
+	protected:
+		virtual void RenderGUI() {}
+
 	private:
 		const char* name;
+		bool show;
 	};
 }

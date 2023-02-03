@@ -24,6 +24,7 @@ namespace bt
 		void Render();
 
 	private:
+
 		std::string name;
 		Style* style;
 		Texture* tex;

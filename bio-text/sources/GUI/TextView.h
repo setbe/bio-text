@@ -3,6 +3,8 @@
 #include <imgui_internal.h>
 #include <memory>
 #include "DockWidget.h"
+#include "Style.h"
+#include <string>
 
 namespace bt
 {
@@ -12,9 +14,10 @@ namespace bt
 		TextView();
 		~TextView();
 
-		void Render() override;
-
 	private:
-		char text[512];
+		void RenderGUI() override;
+
+		std::string symbols_counter;
+		char text[513];
 	};
 }

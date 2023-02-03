@@ -146,11 +146,11 @@ namespace bt {
 		colors[ImGuiCol_TitleBgActive] = bgColor;
 		colors[ImGuiCol_TitleBgCollapsed] = bgColor;
 		colors[ImGuiCol_MenuBarBg] = bgColor;
-		colors[ImGuiCol_ScrollbarBg] = ColorFromBytes(37, 37, 38);
+		colors[ImGuiCol_ScrollbarBg] = {0.0, 0.0f, 0.0f, 0.0f};
 		colors[ImGuiCol_ScrollbarGrab] = lightBgColor;
 		colors[ImGuiCol_ScrollbarGrabHovered] = veryLightBgColor;
 		colors[ImGuiCol_ScrollbarGrabActive] = veryLightBgColor;
-		colors[ImGuiCol_CheckMark] = panelActiveColor;
+		colors[ImGuiCol_CheckMark] = panelHoverColor;
 		colors[ImGuiCol_SliderGrab] = panelHoverColor;
 		colors[ImGuiCol_SliderGrabActive] = panelActiveColor;
 		colors[ImGuiCol_Button] = panelColor;

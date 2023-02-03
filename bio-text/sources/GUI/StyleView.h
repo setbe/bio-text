@@ -11,8 +11,9 @@ namespace bt
 	{
 	public:
 		StyleView(Style* style_) : DockWidget("Style"), style(style_) { }
-
-		void Render() override;
+		
+	protected:
+		void RenderGUI() override;
 
 	private:
 		Style* style;

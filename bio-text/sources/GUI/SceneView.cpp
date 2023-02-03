@@ -45,9 +45,9 @@ namespace bt
 		shader_program->Delete();
 	}
 
-	void SceneView::Render()
+	void SceneView::RenderGUI()
 	{
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 10.0f, 0.0f });
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 10.0f, 10.0f });
 		ImGui::Begin(getName());
 
 		image_view->Render();

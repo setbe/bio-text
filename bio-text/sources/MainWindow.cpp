@@ -203,7 +203,8 @@ namespace bt
 
             if (ImGui::BeginMenu("View"))
             {
-                ImGui::Checkbox("Style##checkbox", nullptr);
+                ImGui::Checkbox("Style##checkbox", scene_view->style_view->getShow());
+                ImGui::Checkbox("Text Edit##checkbox", text_view->getShow());
 
                 ImGui::EndMenu();
             }

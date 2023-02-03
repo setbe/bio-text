@@ -2,7 +2,7 @@
 
 namespace bt
 {
-	void StyleView::Render()
+	void StyleView::RenderGUI()
 	{
 		int* font_size = style->getFontSize();
 		float size_coef = (float)(*font_size) / 10;

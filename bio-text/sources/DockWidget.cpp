@@ -4,6 +4,13 @@ namespace bt {
 	DockWidget::DockWidget(const char* name)
 	{
 		this->name = name;
+		this->show = true;
+	}
+
+	void DockWidget::Render()
+	{
+		if (show)
+			RenderGUI();
 	}
 
 	DockWidget::~DockWidget()

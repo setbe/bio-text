@@ -18,11 +18,13 @@ namespace bt
 	public:
 		SceneView();
 
-		void Render() override;
 		void Delete();
 
 		std::unique_ptr<StyleView> style_view;
+
 	private:
+		void RenderGUI() override;
+
 		std::unique_ptr<ImageView> image_view;
 		VAO* vao;
 		VBO* vbo;
