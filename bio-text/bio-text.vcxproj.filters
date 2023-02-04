@@ -96,6 +96,12 @@
     <ClCompile Include="sources\GUI\TextView.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
+    <ClCompile Include="sources\Curves.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="sources\GUI\FontView.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\Application.h">
@@ -147,6 +153,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="sources\GUI\TextView.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\Curves.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="sources\GUI\FontView.h">
       <Filter>GUI</Filter>
     </ClInclude>
   </ItemGroup>

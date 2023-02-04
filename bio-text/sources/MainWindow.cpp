@@ -191,12 +191,22 @@ namespace bt
                     ImGui::EndMenu();
                 }
 
+                bool close_button_disabled = scene_view->getCurrentEditType() == Edit::None ? false : true;
+                if (ImGui::MenuItem("Close", "Ctrl + W", nullptr, close_button_disabled))
+                {
+                    scene_view->ChangeEditType(Edit::None);
+                }
+
                 ImGui::EndMenu();
             }
 
             if (ImGui::BeginMenu("Edit"))
             {
-                ImGui::MenuItem("something");
+                if (ImGui::MenuItem("Image##editor"))
+                    scene_view->ChangeEditType(Edit::Image);
+
+                if (ImGui::MenuItem("Font##editor"))
+                    scene_view->ChangeEditType(Edit::Font);
 
                 ImGui::EndMenu();
             }
