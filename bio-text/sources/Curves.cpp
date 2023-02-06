@@ -24,27 +24,3 @@ void Curve::DeletePoint(uint32_t del_pos)
 		points.erase(it);
 	}
 }
-
-std::list<ImVec2> Curve::GetPointsToDraw(std::list<ImVec2> points_, size_t n)
-{
-	std::list<ImVec2> list;
-
-	std::list<ImVec2>::iterator it = points_.begin();
-	std::advance(it, n);
-
-	list.push_back(*it); it++;
-	list.push_back(*it); it++;
-	list.push_back(*it);
-
-	if (n >= points_.size())
-	{
-		list.push_back({it->x + 0.05f, it->y});
-	}
-	else
-	{
-		it++;
-		list.push_back(*it);
-	}
-
-	return list;
-}

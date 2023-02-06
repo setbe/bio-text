@@ -25,7 +25,6 @@ namespace bt
 	public:
 		void AddPoint(BezierPoint point, int pos = -1);
 		void DeletePoint(uint32_t pos_in_points);
-		std::list<ImVec2> GetPointsToDraw(std::list<ImVec2> points, size_t n);
 
 		std::list<BezierPoint> points;
 	};
