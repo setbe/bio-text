@@ -13,12 +13,12 @@ namespace bt
         {
             stop = std::chrono::high_resolution_clock::now();
             duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-            if (duration.count() >= 20000)
+            if (duration.count() >= 10000)
             {
                 return;
             }
             else
-                std::this_thread::sleep_for(std::chrono::milliseconds(10));
+                std::this_thread::sleep_for(std::chrono::milliseconds(12));
         }
     }
 

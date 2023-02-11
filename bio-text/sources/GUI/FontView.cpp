@@ -2,6 +2,13 @@
 
 using namespace bt;
 
+bool isPointOnCanvas(ImVec4 canvas, ImVec2 point)
+{
+    
+
+    return false;
+}
+
 inline ImVec2 cnvPoint(ImVec4 canvas, ImVec2 point)
 {
     return { canvas.x + point.x * (canvas.z + 1e-5f), canvas.y + point.y * (canvas.w + 1e-5f) };
@@ -14,17 +21,21 @@ inline ImVec2 ntvPoint(ImVec4 canvas, ImVec2 point)
 
 static void HelpManipulateControlPoint(Curve* curve, const ImVec4 canvas)
 {
+    int count = 0;
     int point_index = 0;
     std::list<BezierPoint> points;
     ImVec2* p;
 
-    if (ImGui::IsMouseClicked(ImGuiMouseButton_Right))
+    if (ImGui::IsItemHovered())
     {
-        ImVec2 p = { ImGui::GetMousePos().x - ImGui::GetWindowPos().x - 7.0f, ImGui::GetMousePos().y - ImGui::GetWindowPos().y - 7.0f};
-        ImVec2 p_left = { p.x - 20.0f, p.y };
-        ImVec2 p_right = { p.x + 20.0f, p.y };
+        if (!ImGui::IsKeyPressed(ImGuiKey_LeftAlt) && ImGui::IsKeyPressed(ImGuiKey_LeftCtrl) && ImGui::IsMouseClicked(ImGuiMouseButton_Right))
+        {
+            ImVec2 p = { ImGui::GetMousePos().x - ImGui::GetWindowPos().x - 7.0f, ImGui::GetMousePos().y - ImGui::GetWindowPos().y - 7.0f };
+            ImVec2 p_left = { p.x - 20.0f, p.y };
+            ImVec2 p_right = { p.x + 20.0f, p.y };
 
-        curve->AddPoint(BezierPoint(ntvPoint(canvas, p_left), ntvPoint(canvas, p), ntvPoint(canvas, p_right)));
+            curve->AddPoint(BezierPoint(ntvPoint(canvas, p_left), ntvPoint(canvas, p), ntvPoint(canvas, p_right)));
+        }
     }
 
     for (BezierPoint& bp : curve->points)
@@ -42,8 +53,8 @@ static void HelpManipulateControlPoint(Curve* curve, const ImVec4 canvas)
             if (ImGui::IsItemHovered())
             {
                 if (ImGui::IsMouseHoveringRect(
-                    ImVec2(point.x - 7 * 0.5f, point.y - 7 * 0.5f),
-                    ImVec2(point.x + 7 * 0.5f, point.y + 7 * 0.5f)))
+                    ImVec2(point.x - 10 * 0.5f, point.y - 10 * 0.5f),
+                    ImVec2(point.x + 10 * 0.5f, point.y + 10 * 0.5f)))
                 {
                     hovered = true;
 
@@ -56,8 +67,16 @@ static void HelpManipulateControlPoint(Curve* curve, const ImVec4 canvas)
 
             ImDrawList* draw_list = ImGui::GetWindowDrawList();
             // draw point edge
-            draw_list->AddRect({ point.x - 5, point.y - 5 }, { point.x + 5, point.y + 5 }, (selected_control_point == point_index || i == 1) ? IM_COL32(255, 255, 255, 100) :
-                (hovered) ? IM_COL32(155, 155, 155, 100) : IM_COL32(0, 0, 0, 155), 0.0f, 0, 1.0f);
+            if (i != 1)         // directional bezier's point
+            {
+                draw_list->AddRect({ point.x - 5, point.y - 5 }, { point.x + 5, point.y + 5 }, (selected_control_point == point_index) ? IM_COL32(255, 255, 255, 100) :
+                    (hovered) ? IM_COL32(155, 155, 155, 100) : IM_COL32(0, 0, 0, 155), 0.0f, 0, 1.0f);
+            }
+            else                // main bezier's point
+            {
+                draw_list->AddRect({ point.x - 5, point.y - 5 }, { point.x + 5, point.y + 5 }, (selected_control_point == point_index) ? IM_COL32(80, 200, 120, 255) :
+                    (hovered) ? IM_COL32(48, 119, 71, 255) : IM_COL32(48, 119, 71, 155), 0.0f, 0, 1.0f);
+            }
 
             // unselect point
             if (ImGui::IsMouseReleased(ImGuiMouseButton_Left))
@@ -65,17 +84,67 @@ static void HelpManipulateControlPoint(Curve* curve, const ImVec4 canvas)
 
             // move point, will be updated on next frame
             if (selected_control_point == point_index &&
-                ImGui::IsMouseDragging(ImGuiMouseButton_Left, 0.0f))
+                ImGui::IsMouseDragging(ImGuiMouseButton_Left, 0.0f) &&
+                ImGui::IsItemHovered())
             {
                 ImGuiIO& io = ImGui::GetIO();
-                p->x += io.MouseDelta.x / (canvas.z + 1e-5f);
-                p->y += io.MouseDelta.y / (canvas.w + 1e-5f);
+                if (i != 1 && !ImGui::IsKeyDown(ImGuiKey_Space))
+                {
+                    if (ImGui::IsKeyDown(ImGuiKey_LeftCtrl))
+                    {
+                        p->x += io.MouseDelta.x / (canvas.z + 1e-5f);
+                        p->y += io.MouseDelta.y / (canvas.w + 1e-5f);
+                    }
+                    else
+                    {
+                        float x = io.MouseDelta.x / (canvas.z + 1e-5f);
+                        float y = io.MouseDelta.y / (canvas.w + 1e-5f);
+
+                        if (i == 0)
+                        {
+                            bp.left.x += x;   
+                            bp.left.y += y;
+                            
+                            bp.right.x -= x;   
+                            bp.right.y -= y;
+                        }
+                        else
+                        {
+                            bp.right.x += x;
+                            bp.right.y += y;
+
+                            bp.left.x -= x;
+                            bp.left.y -= y;
+                        }
+                    }
+                }
+                else
+                {
+                    if (ImGui::IsKeyDown(ImGuiKey_LeftAlt))
+                    {
+                        curve->DeletePoint(count);
+                        return;
+                    }
+
+                    float x = io.MouseDelta.x / (canvas.z + 1e-5f);
+                    float y = io.MouseDelta.y / (canvas.w + 1e-5f);
+
+                    bp.left.x += x;    
+                    bp.left.y += y;
+                    
+                    if (!ImGui::IsKeyDown(ImGuiKey_LeftCtrl))
+                    {
+                        bp.point.x += x;
+                        bp.point.y += y;
+                    }
+
+                    bp.right.x += x;   
+                    bp.right.y += y;
+                }
             }
-
             point_index++;
-
-            
         }
+        count++;
     }
     return;
 }
@@ -84,12 +153,12 @@ void FontView::Render()
 {
     // canvas from last tab
     // Using InvisibleButton() as a convenience 1) it will advance the layout cursor and 2) allows us to use IsItemHovered()/IsItemActive()
-    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 14.0f);
+    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 13.0f);
     ImVec2 canvas_p0 = ImGui::GetCursorScreenPos();      // ImDrawList API uses screen coordinates!
     ImVec2 canvas_sz = ImGui::GetContentRegionAvail();   // Resize canvas to what's available
     if (canvas_sz.x < 50.0f) canvas_sz.x = 50.0f;
     if (canvas_sz.y < 50.0f) canvas_sz.y = 50.0f;
-    ImVec2 canvas_p1 = ImVec2(canvas_p0.x + canvas_sz.x, canvas_p0.y + canvas_sz.y);
+    ImVec2 canvas_p1 = ImVec2(canvas_p0.x + canvas_sz.x, canvas_p0.y + canvas_sz.x);
 
     // Draw border and background color
     ImGuiIO& io = ImGui::GetIO();

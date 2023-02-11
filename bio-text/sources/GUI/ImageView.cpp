@@ -10,7 +10,7 @@ namespace bt
 		style = new Style();
 		tex = nullptr;
 
-		Open("img.jpg");
+		//Open("img.jpg");
 	}
 
 	bool ImageView::Open(std::string name)
