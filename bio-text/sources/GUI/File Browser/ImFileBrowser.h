@@ -10,6 +10,7 @@
 #include <functional>
 #include <memory>
 #include <string>
+#include "../../../include/imgui/imgui.h"
 
 #ifndef IMGUI_VERSION
 #   error "include imgui.h before this header"
@@ -460,9 +461,9 @@ inline void ImGui::FileBrowser::Display()
 
     SameLine();
 
-    int escIdx = GetIO().KeyMap[ImGuiKey_Escape];
+    //int escIdx = GetIO().KeyMap[ImGuiKey_Escape];
     if(Button(cancel_.c_str()) || closeFlag_ ||
-        ((flags_ & ImGuiFileBrowserFlags_CloseOnEsc) && IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) && escIdx >= 0 && IsKeyPressed(escIdx)))
+        ((flags_ & ImGuiFileBrowserFlags_CloseOnEsc) && IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) && ImGuiKey_Escape >= 0 && IsKeyPressed(ImGuiKey_Escape)))
         CloseCurrentPopup();
 
     if(!statusStr_.empty() && !(flags_ & ImGuiFileBrowserFlags_NoStatusBar))

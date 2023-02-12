@@ -21,7 +21,7 @@ namespace bt
 		Font
 	};
 
-	class SceneView : public DockWidget
+	class SceneView : public DockWidget, public ImageView
 	{
 	public:
 		SceneView();
@@ -30,10 +30,9 @@ namespace bt
 
 		std::unique_ptr<StyleView> style_view;
 
-		void ChangeEditType(Edit what_to_edit);
+		void ChangeEditType(Edit value);
 		Edit getCurrentEditType() { return edit_type; }
 
-		std::unique_ptr<ImageView> image_view;
 		std::unique_ptr<FontView> font_view;
 
 	private:
@@ -42,7 +41,6 @@ namespace bt
 		VAO* vao;
 		VBO* vbo;
 		EBO* ebo;
-		Shader* shader_program;
 		GLuint uniID;
 
 		Edit edit_type;

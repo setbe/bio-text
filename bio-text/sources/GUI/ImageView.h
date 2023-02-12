@@ -7,13 +7,14 @@
 #include "StyleView.h"
 #include "Texture.h"
 #include "shaderClass.h"
+#include "File Browser/ImFileBrowser.h"
 
 namespace bt
 {
 	class ImageView
 	{
 	public:
-		ImageView(Shader* shader);
+		ImageView();
 		~ImageView();
 
 		bool Open(std::string name);
@@ -21,16 +22,21 @@ namespace bt
 		Style* getStyle()
 		{ return style; }
 
-		void Render();
+		void RenderImage();
 
+		ImGui::FileBrowser dialog;
+		std::function<void(const std::string&)> ImageLoadCallback;
+
+
+	protected:
+		Shader* shader;
+	
 	private:
-
 		std::string name;
 		Style* style;
 		Texture* tex;
 		int position[2];
 		int dsize[2];
 		float scale;
-		Shader* shader = nullptr;
 	};
 }

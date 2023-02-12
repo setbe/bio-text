@@ -124,8 +124,8 @@ namespace bt {
 		const ImVec4 veryLightBgColor = ColorFromBytes(90, 90, 95);
 
 		const ImVec4 panelColor = ColorFromBytes(51, 51, 55);
-		const ImVec4 panelHoverColor = ColorFromBytes(29, 121, 106);
-		const ImVec4 panelActiveColor = ColorFromBytes(0, 85, 70);
+		const ImVec4 panelActiveColor = ColorFromBytes(29, 121, 106);
+		const ImVec4 panelHoverColor = ColorFromBytes(0, 85, 70);
 
 		const ImVec4 textColor = ColorFromBytes(255, 255, 255);
 		const ImVec4 textDisabledColor = ColorFromBytes(151, 151, 151);
@@ -156,12 +156,12 @@ namespace bt {
 		colors[ImGuiCol_Button] = panelColor;
 		colors[ImGuiCol_ButtonHovered] = panelHoverColor;
 		colors[ImGuiCol_ButtonActive] = panelHoverColor;
-		colors[ImGuiCol_Header] = ColorFromBytes(47, 47, 48);
+		colors[ImGuiCol_Header] = bgColor;
 		colors[ImGuiCol_HeaderHovered] = panelHoverColor;
 		colors[ImGuiCol_HeaderActive] = panelActiveColor;
 		colors[ImGuiCol_Separator] = bgColor;
-		colors[ImGuiCol_SeparatorHovered] = borderColor;
-		colors[ImGuiCol_SeparatorActive] = panelHoverColor;
+		colors[ImGuiCol_SeparatorHovered] = bgColor;
+		colors[ImGuiCol_SeparatorActive] = bgColor;
 		colors[ImGuiCol_ResizeGrip] = panelColor;
 		colors[ImGuiCol_ResizeGripHovered] = panelHoverColor;
 		colors[ImGuiCol_ResizeGripActive] = bgColor;
@@ -173,10 +173,10 @@ namespace bt {
 		colors[ImGuiCol_NavHighlight] = bgColor;
 		colors[ImGuiCol_DockingPreview] = panelActiveColor;
 		colors[ImGuiCol_Tab] = ColorFromBytes(25, 25, 26);
-		colors[ImGuiCol_TabActive] = ColorFromBytes(37, 37, 38);
-		colors[ImGuiCol_TabUnfocused] = ColorFromBytes(25, 25, 26);
-		colors[ImGuiCol_TabUnfocusedActive] = ColorFromBytes(25, 25, 26);
-		colors[ImGuiCol_TabHovered] = ColorFromBytes(37, 37, 38);
+		colors[ImGuiCol_TabActive] = panelHoverColor;
+		colors[ImGuiCol_TabUnfocused] = panelActiveColor;
+		colors[ImGuiCol_TabUnfocusedActive] = panelActiveColor;
+		colors[ImGuiCol_TabHovered] = panelHoverColor;
 
 		// Docking
 		colors[ImGuiCol_DockingPreview] = ColorFromBytes(0, 85, 70);
@@ -191,6 +191,6 @@ namespace bt {
 		style.ChildRounding = 4.0f;
 		style.WindowMinSize = {220, 100};
 		style.ItemInnerSpacing = { 10.0f, 7.0f };
-		style.FramePadding = { 8.0f, 5.0f };
+		style.FramePadding = { 10.0f, 5.0f };
 	}
 }

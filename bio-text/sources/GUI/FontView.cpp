@@ -2,13 +2,6 @@
 
 using namespace bt;
 
-bool isPointOnCanvas(ImVec4 canvas, ImVec2 point)
-{
-    
-
-    return false;
-}
-
 inline ImVec2 cnvPoint(ImVec4 canvas, ImVec2 point)
 {
     return { canvas.x + point.x * (canvas.z + 1e-5f), canvas.y + point.y * (canvas.w + 1e-5f) };
@@ -28,7 +21,7 @@ static void HelpManipulateControlPoint(Curve* curve, const ImVec4 canvas)
 
     if (ImGui::IsItemHovered())
     {
-        if (!ImGui::IsKeyPressed(ImGuiKey_LeftAlt) && ImGui::IsKeyPressed(ImGuiKey_LeftCtrl) && ImGui::IsMouseClicked(ImGuiMouseButton_Right))
+        if (!ImGui::IsKeyPressed(ImGuiKey_LeftAlt) && ImGui::IsMouseClicked(ImGuiMouseButton_Right))
         {
             ImVec2 p = { ImGui::GetMousePos().x - ImGui::GetWindowPos().x - 7.0f, ImGui::GetMousePos().y - ImGui::GetWindowPos().y - 7.0f };
             ImVec2 p_left = { p.x - 20.0f, p.y };
@@ -74,7 +67,7 @@ static void HelpManipulateControlPoint(Curve* curve, const ImVec4 canvas)
             }
             else                // main bezier's point
             {
-                draw_list->AddRect({ point.x - 5, point.y - 5 }, { point.x + 5, point.y + 5 }, (selected_control_point == point_index) ? IM_COL32(80, 200, 120, 255) :
+                draw_list->AddRect({ point.x - 5, point.y - 5 }, { point.x + 5, point.y + 5 }, (selected_control_point == point_index) ? IM_COL32(135, 255, 175, 255) :
                     (hovered) ? IM_COL32(48, 119, 71, 255) : IM_COL32(48, 119, 71, 155), 0.0f, 0, 1.0f);
             }
 
@@ -153,22 +146,43 @@ void FontView::Render()
 {
     // canvas from last tab
     // Using InvisibleButton() as a convenience 1) it will advance the layout cursor and 2) allows us to use IsItemHovered()/IsItemActive()
-    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 13.0f);
+    //ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0.0f, 0.0f });
+    //ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 13.0f);
+    ImGui::SetCursorScreenPos({ ImGui::GetCursorScreenPos().x, ImGui::GetCursorScreenPos().y + 13.0f });
     ImVec2 canvas_p0 = ImGui::GetCursorScreenPos();      // ImDrawList API uses screen coordinates!
     ImVec2 canvas_sz = ImGui::GetContentRegionAvail();   // Resize canvas to what's available
-    if (canvas_sz.x < 50.0f) canvas_sz.x = 50.0f;
-    if (canvas_sz.y < 50.0f) canvas_sz.y = 50.0f;
-    ImVec2 canvas_p1 = ImVec2(canvas_p0.x + canvas_sz.x, canvas_p0.y + canvas_sz.x);
+    
+    if (canvas_sz.x < 50.0f) 
+        canvas_sz.x = 50.0f;
+    
+    if (canvas_sz.x > canvas_sz.y) 
+    {
+        canvas_sz.x = canvas_sz.y;
+    }
+    else
+    {
+        canvas_sz.y = canvas_sz.x;
+    }
 
-    // Draw border and background color
     ImGuiIO& io = ImGui::GetIO();
     ImDrawList* draw_list = ImGui::GetWindowDrawList();
-    draw_list->AddRectFilled(canvas_p0, canvas_p1, IM_COL32(33, 33, 34, 255));
-    //draw_list->AddRect(canvas_p0, canvas_p1, IM_COL32(255, 255, 255, 255));
 
-    // This will catch our interactions, only left button, no scrolling on this one
+    // padding
+    float padding = 10.0f;
+    canvas_p0.x += padding;
+    canvas_p0.y += padding;
+    
+    // to left dock
+    canvas_sz.x /= 2.0f;
+    canvas_sz.y /= 2.0f;
+    ImVec2 canvas_p1 = ImVec2(canvas_p0.x + canvas_sz.x - padding, canvas_p0.y + canvas_sz.x - padding);
+
+    // left background (editor)
+    draw_list->AddRectFilled(canvas_p0, canvas_p1, IM_COL32(30, 30, 31, 255), 4.0f);
+
+
     ImGui::InvisibleButton("canvas", canvas_sz, ImGuiButtonFlags_MouseButtonLeft);
-    ImVec4 canvas_rc = ImVec4(canvas_p0.x, canvas_p0.y, canvas_p1.x - canvas_p0.x, canvas_p1.y - canvas_p0.y);
+    ImVec4 canvas_rc = ImVec4(canvas_p0.x, canvas_p0.y, (canvas_p1.x - canvas_p0.x) * 2.0f, (canvas_p1.y - canvas_p0.y) * 0.2f);
 
     draw_list->PushClipRect(canvas_p0, canvas_p1, true); // canvas clipping
     {
@@ -204,7 +218,20 @@ void FontView::Render()
 
             last = *it;
         }
+        
+        // right background (preview)
+        canvas_sz.x *= 3.0f;
+        canvas_sz.y *= 3.0f;
+        canvas_p1.x += canvas_sz.x;
+        canvas_p1.y += canvas_sz.y;
+
+        //draw_list->AddRectFilled(canvas_p0, canvas_p1, IM_COL32(30, 30, 31, 255), 4.0f);
+
+
+
+
         draw_list->ChannelsMerge(); // merge channels
     }
     draw_list->PopClipRect();
+    //ImGui::PopStyleVar();
 }

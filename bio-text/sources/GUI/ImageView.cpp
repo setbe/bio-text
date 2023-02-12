@@ -2,15 +2,13 @@
 
 namespace bt
 {
-	ImageView::ImageView(Shader* shader)
+	ImageView::ImageView()
 	{
 		scale = 0.4f;
 		this->position[0] = this->position[1] = 0;
-		this->shader = shader;
 		style = new Style();
 		tex = nullptr;
-
-		//Open("img.jpg");
+		shader = nullptr;
 	}
 
 	bool ImageView::Open(std::string name)
@@ -32,7 +30,7 @@ namespace bt
 			tex->Delete();
 	}
 
-	void ImageView::Render()
+	void ImageView::RenderImage()
 	{
 		ImGui::SliderInt2("Position", position, -(ImGui::GetWindowSize().x - dsize[0] * scale), ImGui::GetWindowSize().x - dsize[0] * scale);
 		ImGui::SliderFloat("Scale", &scale, 0.2f, 5.0f);

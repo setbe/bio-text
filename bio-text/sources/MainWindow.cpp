@@ -44,6 +44,7 @@ namespace bt
                 glfwSetScrollCallback(window, OnScrollCallback);
                 glfwSetWindowSizeCallback(window, OnWindowResizeCallback);
                 glfwSetWindowCloseCallback(window, OnWindowCloseCallback);
+                glfwSetWindowSizeLimits(window, 880, 500, 999999, 999999);
 
                 glfwMakeContextCurrent(this->window);
                 glfwSwapInterval(1); // Enable vsync
@@ -166,11 +167,11 @@ namespace bt
         ImGui::SetNextWindowClass(&centralAlways);
         ImGui::SetNextWindowDockID(node->ID, ImGuiCond_Always);
         scene_view->Render();
-        ImGui::PushStyleColor(ImGuiCol_WindowBg, ColorFromBytes(37, 37, 38));
-        ImGui::PushStyleColor(ImGuiCol_FrameBg, ColorFromBytes(37, 37, 38));
+        //ImGui::PushStyleColor(ImGuiCol_WindowBg, ColorFromBytes(37, 37, 38));
+        //ImGui::PushStyleColor(ImGuiCol_FrameBg, ColorFromBytes(37, 37, 38));
         scene_view->style_view->Render();
         text_view->Render();
-        ImGui::PopStyleColor(2);
+       // ImGui::PopStyleColor(2);
 
         RenderMenu();
     }
@@ -185,7 +186,10 @@ namespace bt
             {
                 if (ImGui::BeginMenu("Open"))
                 {
-                    ImGui::MenuItem("Image", "Ctrl + O");
+                    if (ImGui::MenuItem("Image", "Ctrl + O"))
+                    {
+                        
+                    }
                     ImGui::MenuItem("Project", "Ctrl + P");
                     ImGui::MenuItem("Font", "Ctrl + [");
                     ImGui::EndMenu();
