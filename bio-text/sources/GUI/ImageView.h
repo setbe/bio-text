@@ -7,7 +7,7 @@
 #include "StyleView.h"
 #include "Texture.h"
 #include "shaderClass.h"
-#include "File Browser/ImFileBrowser.h"
+//#include "File Browser/ImFileBrowser.h"
 
 namespace bt
 {
@@ -24,8 +24,8 @@ namespace bt
 
 		void RenderImage();
 
-		ImGui::FileBrowser dialog;
-		std::function<void(const std::string&)> ImageLoadCallback;
+		/*ImGui::FileBrowser dialog;
+		std::function<void(const std::string&)> ImageLoadCallback;*/
 
 
 	protected:

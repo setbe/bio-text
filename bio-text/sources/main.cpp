@@ -3,8 +3,9 @@
 
 int main(int, char**)
 {
-    bt::App app;
-    app.Loop();
+	printf("it's fine\n");
+	bt::App app;
+	app.Loop();
 
     return 0;
 }

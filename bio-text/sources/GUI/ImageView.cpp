@@ -32,7 +32,7 @@ namespace bt
 
 	void ImageView::RenderImage()
 	{
-		ImGui::SliderInt2("Position", position, -(ImGui::GetWindowSize().x - dsize[0] * scale), ImGui::GetWindowSize().x - dsize[0] * scale);
+		/*ImGui::SliderInt2("Position", position, -(ImGui::GetWindowSize().x - dsize[0] * scale), ImGui::GetWindowSize().x - dsize[0] * scale);
 		ImGui::SliderFloat("Scale", &scale, 0.2f, 5.0f);
 		ImGui::NewLine();
 
@@ -40,6 +40,6 @@ namespace bt
 		float center_y = (ImGui::GetWindowSize().y - dsize[1] * scale + position[1]) * 0.5f;
 
 		ImGui::SetCursorPos( {center_x, center_y} );
-		ImGui::Image((void*)(GLuint)tex->ID, { dsize[0] * scale, dsize[1] * scale });
+		ImGui::Image((void*)(GLuint)tex->ID, { dsize[0] * scale, dsize[1] * scale });*/
 	}
 }
