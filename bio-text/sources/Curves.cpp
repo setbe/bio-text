@@ -4,7 +4,8 @@ using namespace bt;
 
 void Curve::AddPoint(BezierPoint point, int pos)
 {
-	if (pos >= 0) {
+	if (pos >= 0) 
+	{
 		auto it = points.begin();
 		std::advance(it, pos);
 		points.insert(it, point);
@@ -17,7 +18,7 @@ void Curve::AddPoint(BezierPoint point, int pos)
 
 void Curve::DeletePoint(uint32_t del_pos)
 {
-	if (del_pos > 0 && del_pos < points.size())
+	if (del_pos >= 0 && del_pos < points.size())
 	{
 		auto it = points.begin();
 		std::advance(it, del_pos);

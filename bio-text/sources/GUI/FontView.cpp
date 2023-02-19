@@ -12,142 +12,170 @@ inline ImVec2 ntvPoint(ImVec4 canvas, ImVec2 point)
     return { (point.x) / (canvas.z + 1e-5f), (point.y) / (canvas.w + 1e-5f) };
 }
 
-static void HelpManipulateControlPoint(Curve* curve, const ImVec4 canvas)
+void FontView::HelpManipulateControlPoint(const ImVec4 canvas)
 {
-    int count = 0;
-    int point_index = 0;
+    int curve_n;            // counts curves
+    int bezier_n;           // counts bezier curves
+    int point_index = 0;    // bezier point has 3 points. point_index iterate these points
     std::list<BezierPoint> points;
     ImVec2* p;
 
-    if (ImGui::IsItemHovered())
+    if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right))
     {
-        if (!ImGui::IsKeyPressed(ImGuiKey_LeftAlt) && ImGui::IsMouseClicked(ImGuiMouseButton_Right))
+        if (ImGui::IsKeyPressed(ImGuiKey_LeftShift) && curves.size() < 50)     // create new curve
+        {
+            ImVec2 p = { ImGui::GetMousePos().x - ImGui::GetWindowPos().x - 7.0f, ImGui::GetMousePos().y - ImGui::GetWindowPos().y - 7.0f };
+            ImVec2 p_left = { p.x - 20.0f, p.y };
+            ImVec2 p_right = { p.x + 20.0f, p.y };
+            
+            Curve new_curve = Curve();
+            new_curve.AddPoint(BezierPoint(ntvPoint(canvas, p_left), ntvPoint(canvas, p), ntvPoint(canvas, p_right)));
+            curves.push_back(new_curve);
+            selected_curve = &curves.back();
+        }
+
+        if (!ImGui::IsKeyPressed(ImGuiKey_LeftAlt) && selected_curve->points.size() < 50)      // create new point on selected curve
         {
             ImVec2 p = { ImGui::GetMousePos().x - ImGui::GetWindowPos().x - 7.0f, ImGui::GetMousePos().y - ImGui::GetWindowPos().y - 7.0f };
             ImVec2 p_left = { p.x - 20.0f, p.y };
             ImVec2 p_right = { p.x + 20.0f, p.y };
 
-            curve->AddPoint(BezierPoint(ntvPoint(canvas, p_left), ntvPoint(canvas, p), ntvPoint(canvas, p_right)));
+            selected_curve->AddPoint(BezierPoint(ntvPoint(canvas, p_left), ntvPoint(canvas, p), ntvPoint(canvas, p_right)));
         }
     }
 
-    for (BezierPoint& bp : curve->points)
+    curve_n = 0;
+    for (Curve& curve : curves)
     {
-        for (int i = 0; i < 3; i++)
+        bezier_n = 0;
+        for (BezierPoint& bp : curve.points)
         {
-            p = i == 0 ? &bp.left : i == 1 ? &bp.point : &bp.right;
-
-            static int selected_control_point = -1;
-
-            // current point control
-            ImVec2 point = ImVec2(canvas.x + p->x * canvas.z, canvas.y + p->y * canvas.w);
-
-            bool hovered = false;
-            if (ImGui::IsItemHovered())
+            for (int i = 0; i < 3; i++)
             {
-                if (ImGui::IsMouseHoveringRect(
-                    ImVec2(point.x - 10 * 0.5f, point.y - 10 * 0.5f),
-                    ImVec2(point.x + 10 * 0.5f, point.y + 10 * 0.5f)))
+                p = i == 0 ? &bp.left : i == 1 ? &bp.point : &bp.right;
+
+                static int selected_control_point = -1;
+
+                // current point control
+                ImVec2 point = ImVec2(canvas.x + p->x * canvas.z, canvas.y + p->y * canvas.w);
+
+                bool hovered = false;
+                if (ImGui::IsItemHovered())
                 {
-                    hovered = true;
-
-                    // select if active and no point was selected before
-                    // for have only one point movable at same time
-                    if (selected_control_point < 0 && ImGui::IsItemActive())
-                        selected_control_point = point_index;
-                }
-            }
-
-            ImDrawList* draw_list = ImGui::GetWindowDrawList();
-            // draw point edge
-            if (i != 1)         // directional bezier's point
-            {
-                draw_list->AddRect({ point.x - 5, point.y - 5 }, { point.x + 5, point.y + 5 }, (selected_control_point == point_index) ? IM_COL32(255, 255, 255, 100) :
-                    (hovered) ? IM_COL32(155, 155, 155, 100) : IM_COL32(0, 0, 0, 155), 0.0f, 0, 1.0f);
-            }
-            else                // main bezier's point
-            {
-                draw_list->AddRect({ point.x - 5, point.y - 5 }, { point.x + 5, point.y + 5 }, (selected_control_point == point_index) ? IM_COL32(135, 255, 175, 255) :
-                    (hovered) ? IM_COL32(48, 119, 71, 255) : IM_COL32(48, 119, 71, 155), 0.0f, 0, 1.0f);
-            }
-
-            // unselect point
-            if (ImGui::IsMouseReleased(ImGuiMouseButton_Left))
-                selected_control_point = -1;
-
-            // move point, will be updated on next frame
-            if (selected_control_point == point_index &&
-                ImGui::IsMouseDragging(ImGuiMouseButton_Left, 0.0f) &&
-                ImGui::IsItemHovered())
-            {
-                ImGuiIO& io = ImGui::GetIO();
-                if (i != 1 && !ImGui::IsKeyDown(ImGuiKey_Space))
-                {
-                    if (ImGui::IsKeyDown(ImGuiKey_LeftCtrl))
+                    if (ImGui::IsMouseHoveringRect(
+                        ImVec2(point.x - 10 * 0.5f, point.y - 10 * 0.5f),
+                        ImVec2(point.x + 10 * 0.5f, point.y + 10 * 0.5f)))
                     {
-                        p->x += io.MouseDelta.x / (canvas.z + 1e-5f);
-                        p->y += io.MouseDelta.y / (canvas.w + 1e-5f);
+                        hovered = true;
+
+                        // select if active and no point was selected before
+                        // for have only one point movable at same time
+                        if (selected_control_point < 0 && ImGui::IsItemActive())
+                            selected_control_point = point_index;
                     }
-                    else
-                    {
-                        float x = io.MouseDelta.x / (canvas.z + 1e-5f);
-                        float y = io.MouseDelta.y / (canvas.w + 1e-5f);
+                }
 
-                        if (i == 0)
+                ImDrawList* draw_list = ImGui::GetWindowDrawList();
+                // draw point edge
+                if (i == 1)                             // bezier's point (green)
+                {
+                    draw_list->AddRect({ point.x - 5, point.y - 5 }, { point.x + 5, point.y + 5 }, (selected_control_point == point_index) ? IM_COL32(135, 255, 175, 255) :
+                        (hovered) ? IM_COL32(48, 119, 71, 255) : IM_COL32(48, 119, 71, 155), 0.0f, 0, 1.0f);
+                }
+                else if (&curve == selected_curve)       // direct point (gray)
+                {
+                    draw_list->AddRect({ point.x - 5, point.y - 5 }, { point.x + 5, point.y + 5 }, (selected_control_point == point_index) ? IM_COL32(255, 255, 255, 100) :
+                        (hovered) ? IM_COL32(155, 155, 155, 100) : IM_COL32(0, 0, 0, 155), 0.0f, 0, 1.0f);
+                }
+
+                // unselect point
+                if (ImGui::IsMouseReleased(ImGuiMouseButton_Left))
+                    selected_control_point = -1;
+
+                // move point, will be updated on next frame
+                if (selected_control_point == point_index &&
+                    ImGui::IsMouseDragging(ImGuiMouseButton_Left, 0.0f) &&
+                    ImGui::IsItemHovered())
+                {
+                    selected_curve = &curve;
+                    ImGuiIO& io = ImGui::GetIO();
+                    if (i != 1 && !ImGui::IsKeyDown(ImGuiKey_Space))
+                    {
+                        if (ImGui::IsKeyDown(ImGuiKey_LeftCtrl))
                         {
-                            bp.left.x += x;   
-                            bp.left.y += y;
-                            
-                            bp.right.x -= x;   
-                            bp.right.y -= y;
+                            p->x += io.MouseDelta.x / (canvas.z + 1e-5f);
+                            p->y += io.MouseDelta.y / (canvas.w + 1e-5f);
                         }
                         else
                         {
-                            bp.right.x += x;
-                            bp.right.y += y;
+                            float x = io.MouseDelta.x / (canvas.z + 1e-5f);
+                            float y = io.MouseDelta.y / (canvas.w + 1e-5f);
 
-                            bp.left.x -= x;
-                            bp.left.y -= y;
+                            if (i == 0)
+                            {
+                                bp.left.x += x;
+                                bp.left.y += y;
+
+                                bp.right.x -= x;
+                                bp.right.y -= y;
+                            }
+                            else
+                            {
+                                bp.right.x += x;
+                                bp.right.y += y;
+
+                                bp.left.x -= x;
+                                bp.left.y -= y;
+                            }
                         }
                     }
-                }
-                else
-                {
-                    if (ImGui::IsKeyDown(ImGuiKey_LeftAlt))
+                    else
                     {
-                        curve->DeletePoint(count);
-                        return;
+                        if (ImGui::GetKeyPressedAmount(ImGuiKey_LeftAlt, 0.5f, 0.5f))
+                        {
+                            if (curve.points.size() > 1)
+                            {
+                                curve.DeletePoint(bezier_n);
+                            }
+                            else
+                            {
+                                auto it = curves.begin();
+                                std::advance(it, curve_n);
+                                curves.erase(it);
+
+                                if (!curves.empty()) selected_curve = &curves.back();
+                            }
+                            selected_control_point = -1;
+                            return;
+                        }
+
+                        float x = io.MouseDelta.x / (canvas.z + 1e-5f);
+                        float y = io.MouseDelta.y / (canvas.w + 1e-5f);
+
+                        bp.left.x += x;
+                        bp.left.y += y;
+
+                        if (!ImGui::IsKeyDown(ImGuiKey_LeftCtrl))
+                        {
+                            bp.point.x += x;
+                            bp.point.y += y;
+                        }
+
+                        bp.right.x += x;
+                        bp.right.y += y;
                     }
-
-                    float x = io.MouseDelta.x / (canvas.z + 1e-5f);
-                    float y = io.MouseDelta.y / (canvas.w + 1e-5f);
-
-                    bp.left.x += x;    
-                    bp.left.y += y;
-                    
-                    if (!ImGui::IsKeyDown(ImGuiKey_LeftCtrl))
-                    {
-                        bp.point.x += x;
-                        bp.point.y += y;
-                    }
-
-                    bp.right.x += x;   
-                    bp.right.y += y;
                 }
+                point_index++;
+            
             }
-            point_index++;
+            bezier_n++;
         }
-        count++;
+        curve_n++;
     }
-    return;
 }
 
 void FontView::Render()
 {
-    // canvas from last tab
-    // Using InvisibleButton() as a convenience 1) it will advance the layout cursor and 2) allows us to use IsItemHovered()/IsItemActive()
-    //ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0.0f, 0.0f });
-    //ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 13.0f);
     ImGui::SetCursorScreenPos({ ImGui::GetCursorScreenPos().x, ImGui::GetCursorScreenPos().y + 13.0f });
     ImVec2 canvas_p0 = ImGui::GetCursorScreenPos();      // ImDrawList API uses screen coordinates!
     ImVec2 canvas_sz = ImGui::GetContentRegionAvail();   // Resize canvas to what's available
@@ -172,7 +200,7 @@ void FontView::Render()
     canvas_p0.x += padding;
     canvas_p0.y += padding;
     
-    // to left dock
+    // resize to left dock
     canvas_sz.x /= 2.0f;
     canvas_sz.y /= 2.0f;
     ImVec2 canvas_p1 = ImVec2(canvas_p0.x + canvas_sz.x - padding, canvas_p0.y + canvas_sz.x - padding);
@@ -191,32 +219,52 @@ void FontView::Render()
          // calc and render control point in top layer
         draw_list->ChannelsSetCurrent(1);
 
-        HelpManipulateControlPoint(curve.get(), canvas_rc);
+        HelpManipulateControlPoint(canvas_rc);
 
         // render curve and edges in bottom layer
         draw_list->ChannelsSetCurrent(0);
         const ImU32 curve_color = IM_COL32(80, 200, 120, 255);
 
-        BezierPoint last = curve->points.front();
-
-        auto it = curve->points.begin();
-        std::advance(it, 1);
-
-        for (; it != curve->points.end(); it++)
+        if (!curves.empty() && !curves.front().points.empty())
         {
-            ImVec2 vec1 = cnvPoint(canvas_rc, last.point);
-            ImVec2 vec2 = cnvPoint(canvas_rc, last.right);
-            ImVec2 vec3 = cnvPoint(canvas_rc, it->left);
-            ImVec2 vec4 = cnvPoint(canvas_rc, it->point);
+            BezierPoint last;
+            for (const Curve& curve : curves)               // draw all curves
+            {
+                last = curve.points.front();
+                auto it = curve.points.begin();
+                std::advance(it, 1);
 
-            draw_list->AddBezierCubic(vec1, vec2, vec3, vec4, curve_color, 2.0f, 20);
+                for (; it != curve.points.end(); it++)
+                {
+                    ImVec2 vec1 = cnvPoint(canvas_rc, last.point);
+                    ImVec2 vec2 = cnvPoint(canvas_rc, last.right);
+                    ImVec2 vec3 = cnvPoint(canvas_rc, it->left);
+                    ImVec2 vec4 = cnvPoint(canvas_rc, it->point);
 
-            draw_list->AddLine(vec1, vec2, IM_COL32(255, 255, 255, 20), 1.0f);
-            draw_list->AddLine(vec3, vec4, IM_COL32(255, 255, 255, 20), 1.0f);
-            draw_list->AddLine(cnvPoint(canvas_rc, last.left), cnvPoint(canvas_rc, last.point), IM_COL32(255, 255, 255, 20), 1.0f);
-            draw_list->AddLine(cnvPoint(canvas_rc, it->point), cnvPoint(canvas_rc, it->right), IM_COL32(255, 255, 255, 20), 1.0f);
+                    draw_list->AddBezierCubic(vec1, vec2, vec3, vec4, curve_color, 2.0f, 20);
 
-            last = *it;
+                    last = *it;
+                }
+            }
+                                    
+            last = selected_curve->points.front();          // draw directional lines for selected curve
+            auto it = selected_curve->points.begin();
+            std::advance(it, 1);
+
+            for (; it != selected_curve->points.end(); it++)
+            {
+                ImVec2 vec1 = cnvPoint(canvas_rc, last.point);
+                ImVec2 vec2 = cnvPoint(canvas_rc, last.right);
+                ImVec2 vec3 = cnvPoint(canvas_rc, it->left);
+                ImVec2 vec4 = cnvPoint(canvas_rc, it->point);
+
+                draw_list->AddLine(vec1, vec2, IM_COL32(255, 255, 255, 20), 1.0f);
+                draw_list->AddLine(vec3, vec4, IM_COL32(255, 255, 255, 20), 1.0f);
+                draw_list->AddLine(cnvPoint(canvas_rc, last.left), cnvPoint(canvas_rc, last.point), IM_COL32(255, 255, 255, 20), 1.0f);
+                draw_list->AddLine(cnvPoint(canvas_rc, it->point), cnvPoint(canvas_rc, it->right), IM_COL32(255, 255, 255, 20), 1.0f);
+
+                last = *it;
+            }
         }
         
         // right background (preview)

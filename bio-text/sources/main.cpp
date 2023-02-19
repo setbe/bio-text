@@ -3,7 +3,6 @@
 
 int main(int, char**)
 {
-	printf("it's fine\n");
 	bt::App app;
 	app.Loop();
 

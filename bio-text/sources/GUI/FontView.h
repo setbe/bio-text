@@ -1,5 +1,5 @@
 #pragma once
-#include <memory>
+#include <list>
 #include <imgui.h>
 #include <imgui_internal.h>
 #include <glm/glm.hpp>
@@ -13,13 +13,15 @@ namespace bt
 	{
 	public:
 		FontView() {
-			curve = std::make_unique<Curve>();
-			curve->AddPoint(BezierPoint({ 0.09, 0.70 }, { 0.12, 0.82 }, { 0.15, 0.95 }));
-			curve->AddPoint(BezierPoint({ 0.37, 0.66 }, { 0.46, 0.3 }, { 0.3, 0.1 }));
+			curves.push_back(Curve());
+			selected_curve = &curves.front();
 		}
 		void Render();
 
-		std::unique_ptr<Curve> curve;
+		std::list<Curve> curves;
+		Curve* selected_curve;
 	private:
+
+		void HelpManipulateControlPoint(const ImVec4 canvas);
 	};
 }
