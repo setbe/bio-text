@@ -16,7 +16,7 @@ void FontView::HelpManipulateControlPoint(const ImVec4 canvas)
 {
     int curve_n;            // counts curves
     int bezier_n;           // counts bezier curves
-    int point_index = 0;    // bezier point has 3 points. point_index iterate these points
+    int point_index = 0;    // BezierPoint has 3 points. point_index iterates these points
     std::list<BezierPoint> points;
     ImVec2* p;
 
@@ -25,8 +25,8 @@ void FontView::HelpManipulateControlPoint(const ImVec4 canvas)
         if (ImGui::IsKeyPressed(ImGuiKey_LeftShift) && curves.size() < 50)     // create new curve
         {
             ImVec2 p = { ImGui::GetMousePos().x - ImGui::GetWindowPos().x - 7.0f, ImGui::GetMousePos().y - ImGui::GetWindowPos().y - 7.0f };
-            ImVec2 p_left = { p.x - 20.0f, p.y };
-            ImVec2 p_right = { p.x + 20.0f, p.y };
+            ImVec2 p_left = { p.x - 10.0f, p.y };
+            ImVec2 p_right = { p.x + 10.0f, p.y };
             
             Curve new_curve = Curve();
             new_curve.AddPoint(BezierPoint(ntvPoint(canvas, p_left), ntvPoint(canvas, p), ntvPoint(canvas, p_right)));
@@ -37,8 +37,8 @@ void FontView::HelpManipulateControlPoint(const ImVec4 canvas)
         if (!ImGui::IsKeyPressed(ImGuiKey_LeftAlt) && selected_curve->points.size() < 50)      // create new point on selected curve
         {
             ImVec2 p = { ImGui::GetMousePos().x - ImGui::GetWindowPos().x - 7.0f, ImGui::GetMousePos().y - ImGui::GetWindowPos().y - 7.0f };
-            ImVec2 p_left = { p.x - 20.0f, p.y };
-            ImVec2 p_right = { p.x + 20.0f, p.y };
+            ImVec2 p_left = { p.x - 10.0f, p.y };
+            ImVec2 p_right = { p.x + 10.0f, p.y };
 
             selected_curve->AddPoint(BezierPoint(ntvPoint(canvas, p_left), ntvPoint(canvas, p), ntvPoint(canvas, p_right)));
         }
@@ -101,7 +101,7 @@ void FontView::HelpManipulateControlPoint(const ImVec4 canvas)
                     ImGuiIO& io = ImGui::GetIO();
                     if (i != 1 && !ImGui::IsKeyDown(ImGuiKey_Space))
                     {
-                        if (ImGui::IsKeyDown(ImGuiKey_LeftCtrl))
+                        if (ImGui::IsKeyDown(ImGuiKey_LeftCtrl))    // direction point move
                         {
                             p->x += io.MouseDelta.x / (canvas.z + 1e-5f);
                             p->y += io.MouseDelta.y / (canvas.w + 1e-5f);
@@ -111,27 +111,25 @@ void FontView::HelpManipulateControlPoint(const ImVec4 canvas)
                             float x = io.MouseDelta.x / (canvas.z + 1e-5f);
                             float y = io.MouseDelta.y / (canvas.w + 1e-5f);
 
-                            if (i == 0)
+                            if (i == 0)                             // if left, move left as control point, else right
                             {
                                 bp.left.x += x;
                                 bp.left.y += y;
 
-                                bp.right.x -= x;
-                                bp.right.y -= y;
+                                bp.RotateRightOppositeLeft();
                             }
                             else
                             {
                                 bp.right.x += x;
                                 bp.right.y += y;
 
-                                bp.left.x -= x;
-                                bp.left.y -= y;
+                                bp.RotateLeftOppositeRight();
                             }
                         }
                     }
-                    else
+                    else                                            // if main point
                     {
-                        if (ImGui::GetKeyPressedAmount(ImGuiKey_LeftAlt, 0.5f, 0.5f))
+                        if (ImGui::GetKeyPressedAmount(ImGuiKey_LeftAlt, 0.5f, 0.5f))   // delete point or curve
                         {
                             if (curve.points.size() > 1)
                             {
@@ -155,14 +153,11 @@ void FontView::HelpManipulateControlPoint(const ImVec4 canvas)
                         bp.left.x += x;
                         bp.left.y += y;
 
-                        if (!ImGui::IsKeyDown(ImGuiKey_LeftCtrl))
-                        {
-                            bp.point.x += x;
-                            bp.point.y += y;
-                        }
-
                         bp.right.x += x;
                         bp.right.y += y;
+
+                        bp.point.x += x;
+                        bp.point.y += y;
                     }
                 }
                 point_index++;

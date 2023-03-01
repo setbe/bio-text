@@ -2,6 +2,8 @@
 #include <list>
 #include "imgui.h"
 
+ImVec2 CalcOpposite(ImVec2 p0, ImVec2 p_opposite);
+
 namespace bt
 {
 	class BezierPoint
@@ -14,6 +16,9 @@ namespace bt
 			this->point = p2;
 			this->right = p3;
 		}
+
+		void RotateRightOppositeLeft();
+		void RotateLeftOppositeRight();
 
 		ImVec2 left;
 		ImVec2 point;

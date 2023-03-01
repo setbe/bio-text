@@ -19,7 +19,7 @@ namespace bt
 		ImGui::Begin(getName());
 
 		auto win = ImGui::GetCurrentWindow();
-		ImGui::PushStyleColor(ImGuiCol_FrameBg, ColorFromBytes(25, 25, 27));
+		ImGui::PushStyleColor(ImGuiCol_FrameBg, ColorFromBytes(14, 14, 14));
 		ImGui::InputTextMultiline("##text", text, 513, { win->Size.x - 17, win->Size.y - 60});
 
 		ImGui::SetCursorPosX(win->Size.x - 17 - ImGui::CalcTextSize(symbols_counter.c_str()).x);

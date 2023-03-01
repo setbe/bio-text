@@ -2,6 +2,21 @@
 
 using namespace bt;
 
+ImVec2 CalcOpposite(ImVec2 p0, ImVec2 p_opposite)
+{
+	return { p0.x + p0.x - p_opposite.x, p0.y + p0.y - p_opposite.y };
+}
+
+void BezierPoint::RotateRightOppositeLeft()
+{
+	right = CalcOpposite(point, left);
+}
+
+void BezierPoint::RotateLeftOppositeRight()
+{
+	left = CalcOpposite(point, right);
+}
+
 void Curve::AddPoint(BezierPoint point, int pos)
 {
 	if (pos >= 0) 
