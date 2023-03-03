@@ -59,6 +59,9 @@ namespace bt {
         ImGuiIO* io;
         std::unique_ptr<SceneView> scene_view;
         std::unique_ptr<TextView> text_view;
+
+        bool error_ocurred = false;
+        std::exception exception;
     };
 
     static void OnKeyCallback(GLFWwindow* window, int key, int scan_code, int action, int mods);

@@ -53,7 +53,8 @@ namespace bt
                 IMGUI_CHECKVERSION();
                 ImGui::CreateContext();
                 this->io = &(ImGui::GetIO()); (void)io;
-                this->io->Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\arial.ttf", 14.0f, NULL, io->Fonts->GetGlyphRangesCyrillic());
+                io->Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\arial.ttf", 15.0f, NULL, io->Fonts->GetGlyphRangesCyrillic());
+
                 this->io->IniFilename = nullptr;
                 
                 io->ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
@@ -114,7 +115,26 @@ namespace bt
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        RenderGUI();
+        if (!error_ocurred)
+        {
+            try
+            {
+                RenderGUI();
+            }
+            catch (const std::exception& e)
+            {
+                exception = e;
+                error_ocurred = true;
+            }
+        }
+        else
+        {
+            ImGui::Begin("Error");
+
+            ImGui::TextColored({ 1.0f, 0.0f, 0.0f, 1.0f }, "Error occurred: %s", exception.what());
+
+            ImGui::End();
+        }
         ImGui::Render();
 
         int display_w, display_h;
@@ -188,7 +208,7 @@ namespace bt
                 {
                     if (ImGui::MenuItem("Image", "Ctrl + O"))
                     {
-                        
+                        scene_view->dialog.Open();
                     }
                     ImGui::MenuItem("Project", "Ctrl + P");
                     ImGui::MenuItem("Font", "Ctrl + [");
@@ -198,7 +218,7 @@ namespace bt
                 bool close_button_disabled = scene_view->getCurrentEditType() == Edit::None ? false : true;
                 if (ImGui::MenuItem("Close", "Ctrl + W", nullptr, close_button_disabled))
                 {
-                    scene_view->ChangeEditType(Edit::None);
+                    scene_view->setEditType(Edit::None);
                 }
 
                 ImGui::EndMenu();
@@ -207,10 +227,10 @@ namespace bt
             if (ImGui::BeginMenu("Edit"))
             {
                 if (ImGui::MenuItem("Image##editor"))
-                    scene_view->ChangeEditType(Edit::Image);
+                    scene_view->setEditType(Edit::Image);
 
                 if (ImGui::MenuItem("Font##editor"))
-                    scene_view->ChangeEditType(Edit::Font);
+                    scene_view->setEditType(Edit::Font);
 
                 ImGui::EndMenu();
             }

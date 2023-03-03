@@ -3,11 +3,12 @@
 #include <imgui_internal.h>
 #include <glm/glm.hpp>
 #include <string>
+#include <functional>
 
 #include "StyleView.h"
 #include "Texture.h"
 #include "shaderClass.h"
-//#include "File Browser/ImFileBrowser.h"
+#include "File Browser/ImFileBrowser.h"
 
 namespace bt
 {
@@ -17,26 +18,27 @@ namespace bt
 		ImageView();
 		~ImageView();
 
-		bool Open(std::string name);
+		void setImageLoadCallback(const std::function<void(const std::string&)>& callback);
+		void Open(const std::string& filepath);
 		
 		Style* getStyle()
 		{ return style; }
 
 		void RenderImage();
 
-		/*ImGui::FileBrowser dialog;
-		std::function<void(const std::string&)> ImageLoadCallback;*/
-
+		ImGui::FileBrowser dialog;
 
 	protected:
+		std::function<void(const std::string&)> ImageLoadCallback;
+
 		Shader* shader;
-	
+		std::string current_file;
+
 	private:
-		std::string name;
 		Style* style;
 		Texture* tex;
-		int position[2];
-		int dsize[2];
+		int position[2] = { 0, 0 };
+		int dsize[2] = { 0, 0 };
 		float scale;
 	};
 }

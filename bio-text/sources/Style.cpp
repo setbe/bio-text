@@ -111,9 +111,9 @@ namespace bt {
 			curl_random = (float)fontsize / 10;
 	}
 
-	constexpr ImVec4 ColorFromBytes(uint8_t r, uint8_t g, uint8_t b)
+	constexpr ImVec4 ColorFromBytes(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
 {
-    return ImVec4((float)r / 255.0f, (float)g / 255.0f, (float)b / 255.0f, 1.0f);
+    return ImVec4((float)r / 255.0f, (float)g / 255.0f, (float)b / 255.0f, (float)a / 255.0f);
 };
 
 	void UseDarkTheme()
@@ -159,9 +159,9 @@ namespace bt {
 		colors[ImGuiCol_Header] = bgColor;
 		colors[ImGuiCol_HeaderHovered] = panelHoverColor;
 		colors[ImGuiCol_HeaderActive] = panelActiveColor;
-		colors[ImGuiCol_Separator] = bgColor;
-		colors[ImGuiCol_SeparatorHovered] = bgColor;
-		colors[ImGuiCol_SeparatorActive] = bgColor;
+		colors[ImGuiCol_Separator] = panelColor;
+		colors[ImGuiCol_SeparatorHovered] = panelHoverColor;
+		colors[ImGuiCol_SeparatorActive] = panelActiveColor;
 		colors[ImGuiCol_ResizeGrip] = panelColor;
 		colors[ImGuiCol_ResizeGripHovered] = panelHoverColor;
 		colors[ImGuiCol_ResizeGripActive] = bgColor;
@@ -177,6 +177,7 @@ namespace bt {
 		colors[ImGuiCol_TabUnfocused] = panelActiveColor;
 		colors[ImGuiCol_TabUnfocusedActive] = panelActiveColor;
 		colors[ImGuiCol_TabHovered] = panelHoverColor;
+		colors[ImGuiCol_ModalWindowDimBg] = ColorFromBytes(0, 0, 0, 80);
 
 		// Docking
 		colors[ImGuiCol_DockingPreview] = ColorFromBytes(0, 85, 70);

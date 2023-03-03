@@ -30,7 +30,7 @@ namespace bt
 
 		std::unique_ptr<StyleView> style_view;
 
-		void ChangeEditType(Edit value);
+		void setEditType(Edit value);
 		Edit getCurrentEditType() { return edit_type; }
 
 		std::unique_ptr<FontView> font_view;

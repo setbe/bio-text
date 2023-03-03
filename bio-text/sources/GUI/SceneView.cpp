@@ -35,9 +35,16 @@ namespace bt
 		this->uniID = glGetUniformLocation(shader->ID, "scale");
 		this->style_view = std::make_unique<StyleView>(getStyle());
 		this->font_view = std::make_unique<FontView>();
+
+		setImageLoadCallback( 
+		[this](std::string filepath) 
+		{ 
+			Open(filepath);
+			setEditType(Edit::Image);
+		});
 	}
 
-	void SceneView::ChangeEditType(Edit type)
+	void SceneView::setEditType(Edit type)
 	{
 		edit_type = type;
 	}
@@ -53,20 +60,13 @@ namespace bt
 	void SceneView::RenderGUI()
 	{
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0.0f, 0.0f });
-		ImGui::Begin(getName(), nullptr, ImGuiWindowFlags_NoScrollbar);
-		//dialog.Display();
+		ImGui::Begin(getName(), nullptr, ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_HorizontalScrollbar);
 
 		// draw borders
 		ImVec2 canvas_p0 = ImGui::GetCursorScreenPos();
 		ImVec2 canvas_sz = ImGui::GetContentRegionAvail();
 		canvas_sz.y = canvas_sz.x;
 		ImVec2 canvas_p1 = ImVec2(canvas_p0.x + canvas_sz.x, canvas_p0.y + canvas_sz.x);
-
-		ImDrawList* draw_list = ImGui::GetWindowDrawList();
-
-		draw_list->AddLine({ canvas_p0.x + 1.0f, ImGui::GetCursorScreenPos().y + 26.0f }, { canvas_p0.x + 1.0f, ImGui::GetContentRegionAvail().y + 13.0f + ImGui::GetCursorScreenPos().y }, IM_COL32(29, 121, 106, 255), 1.0f);
-		draw_list->AddLine({ canvas_p1.x - 2.0f, ImGui::GetCursorScreenPos().y + 26.0f }, { canvas_p1.x - 2.0f, ImGui::GetContentRegionAvail().y + 13.0f + ImGui::GetCursorScreenPos().y }, IM_COL32(29, 121, 106, 255), 1.0f);
-
 
 		switch (edit_type)
 		{
@@ -79,8 +79,18 @@ namespace bt
 		default:
 			break;
 		}
-
 		ImGui::End();
 		ImGui::PopStyleVar();
+
+		dialog.Display();
+		if (dialog.HasSelected())
+		{
+			auto file_path = dialog.GetSelected().string();
+			current_file = file_path.substr(file_path.find_last_of("/\\") + 1);
+			
+			ImageLoadCallback(file_path);
+
+			dialog.ClearSelected();
+		}
 	}
 }
