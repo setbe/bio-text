@@ -15,6 +15,8 @@ namespace bt
 		FontView() {
 			curves.push_back(Curve());
 			selected_curve = &curves.front();
+			ui_scale = 2.0f;	// inversed
+								// 1.0f fullscreen
 		}
 		void Render();
 
@@ -23,5 +25,7 @@ namespace bt
 	private:
 
 		void HelpManipulateControlPoint(const ImVec4 canvas);
+
+		float ui_scale;
 	};
 }

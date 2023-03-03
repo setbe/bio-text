@@ -195,9 +195,26 @@ void FontView::Render()
     canvas_p0.x += padding;
     canvas_p0.y += padding;
     
+
+    // scale
+    if (ImGui::IsWindowHovered())
+    {
+        if (ImGui::GetIO().MouseWheel != 0)							// resize font edit with mouse wheel
+        {
+            bool up = ImGui::GetIO().MouseWheel > 0 ? true : false;
+
+            if (up)
+            {
+                if (ui_scale > 1.2f)
+                    ui_scale -= 0.2f;
+            }
+            else if (ui_scale < 2.5f)
+                ui_scale += 0.2f;
+        }
+    }
     // resize to left dock
-    canvas_sz.x /= 2.0f;
-    canvas_sz.y /= 2.0f;
+    canvas_sz.x /= ui_scale;
+    canvas_sz.y /= ui_scale;
     ImVec2 canvas_p1 = ImVec2(canvas_p0.x + canvas_sz.x - padding, canvas_p0.y + canvas_sz.x - padding);
 
     // left background (editor)

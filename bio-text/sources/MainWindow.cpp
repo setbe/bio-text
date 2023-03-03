@@ -210,7 +210,6 @@ namespace bt
                     {
                         scene_view->dialog.Open();
                     }
-                    ImGui::MenuItem("Project", "Ctrl + P");
                     ImGui::MenuItem("Font", "Ctrl + [");
                     ImGui::EndMenu();
                 }

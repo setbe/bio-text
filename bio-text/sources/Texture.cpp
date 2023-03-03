@@ -1,6 +1,6 @@
 #include"Texture.h"
 
-Texture::Texture(const char* image, GLenum texType, GLenum slot, GLenum format, GLenum pixelType, int* w, int* h)
+Texture::Texture(const wchar_t* image, GLenum texType, GLenum slot, GLenum format, GLenum pixelType, int* w, int* h)
 {
 	// Assigns the type of the texture ot the texture object
 	type = texType;
@@ -33,16 +33,19 @@ Texture::Texture(const char* image, GLenum texType, GLenum slot, GLenum format, 
 	if (!h) *h = 0;
 
 	int imgch;
-	unsigned char* bytes = stbi_load(image, w, h, &imgch, 0);
+	FILE* image_file;
+
+	image_file = _wfopen(image, L"rb");
+
+	unsigned char* bytes = stbi_load_from_file(image_file, w, h, &imgch, 0);
+
+	fclose(image_file);
 
 
 	// Assigns the image to the OpenGL Texture object
 	glTexImage2D(texType, 0, GL_RGB, *w, *h, 0, format, pixelType, bytes);
 	// Generates MipMaps
 	glGenerateMipmap(texType);
-
-	// Deletes the image data as it is already in the OpenGL Texture object
-	//stbi_image_free(bytes);
 
 	// Unbinds the OpenGL Texture object so that it can't accidentally be modified
 	glBindTexture(texType, 0);

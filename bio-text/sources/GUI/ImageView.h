@@ -18,8 +18,8 @@ namespace bt
 		ImageView();
 		~ImageView();
 
-		void setImageLoadCallback(const std::function<void(const std::string&)>& callback);
-		void Open(const std::string& filepath);
+		void setImageLoadCallback(const std::function<void(const std::wstring&)>& callback);
+		void OpenImage(const std::wstring& filepath);
 		
 		Style* getStyle()
 		{ return style; }
@@ -29,10 +29,10 @@ namespace bt
 		ImGui::FileBrowser dialog;
 
 	protected:
-		std::function<void(const std::string&)> ImageLoadCallback;
+		std::function<void(const std::wstring&)> ImageLoadCallback;
 
 		Shader* shader;
-		std::string current_file;
+		std::wstring current_file;
 
 	private:
 		Style* style;

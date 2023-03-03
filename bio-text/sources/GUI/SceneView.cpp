@@ -37,9 +37,9 @@ namespace bt
 		this->font_view = std::make_unique<FontView>();
 
 		setImageLoadCallback( 
-		[this](std::string filepath) 
+		[this](std::wstring filepath) 
 		{ 
-			Open(filepath);
+			OpenImage(filepath);
 			setEditType(Edit::Image);
 		});
 	}
@@ -85,8 +85,8 @@ namespace bt
 		dialog.Display();
 		if (dialog.HasSelected())
 		{
-			auto file_path = dialog.GetSelected().string();
-			current_file = file_path.substr(file_path.find_last_of("/\\") + 1);
+			auto file_path = dialog.GetSelected().wstring();
+			current_file = file_path.substr(file_path.find_last_of(L"/\\") + 1);
 			
 			ImageLoadCallback(file_path);
 
