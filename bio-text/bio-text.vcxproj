@@ -169,17 +169,14 @@
   <ItemGroup>
     <ClCompile Include="include\imgui\backends\imgui_impl_glfw.cpp" />
     <ClCompile Include="include\imgui\backends\imgui_impl_opengl3.cpp" />
-    <ClCompile Include="include\imgui\backends\imgui_impl_win32.cpp" />
     <ClCompile Include="include\imgui\imgui.cpp" />
     <ClCompile Include="include\imgui\imgui_draw.cpp" />
     <ClCompile Include="include\imgui\imgui_tables.cpp" />
     <ClCompile Include="include\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="sources\Application.cpp" />
     <ClCompile Include="sources\Curves.cpp" />
     <ClCompile Include="sources\DockWidget.cpp" />
     <ClCompile Include="sources\EBO.cpp" />
     <ClCompile Include="sources\glad.c" />
-    <ClCompile Include="sources\GUIObject.cpp" />
     <ClCompile Include="sources\GUI\FontView.cpp" />
     <ClCompile Include="sources\GUI\ImageView.cpp" />
     <ClCompile Include="sources\GUI\SceneView.cpp" />
@@ -196,11 +193,9 @@
     <ClCompile Include="sources\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="headers\Application.h" />
     <ClInclude Include="headers\Curves.h" />
     <ClInclude Include="headers\DockWidget.h" />
     <ClInclude Include="headers\EBO.h" />
-    <ClInclude Include="headers\GUIObject.h" />
     <ClInclude Include="headers\MainWindow.h" />
     <ClInclude Include="headers\shaderClass.h" />
     <ClInclude Include="headers\Style.h" />
@@ -209,7 +204,6 @@
     <ClInclude Include="headers\VBO.h" />
     <ClInclude Include="headers\Window.h" />
     <ClInclude Include="include\KHR\khrplatform.h" />
-    <ClInclude Include="include\utfcpp\utf8.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="sources\GUI\File Browser\ImFileBrowser.h" />
     <ClInclude Include="sources\GUI\FontView.h" />

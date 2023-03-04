@@ -2,7 +2,6 @@
 #include <list>
 #include <imgui.h>
 #include <imgui_internal.h>
-#include <glm/glm.hpp>
 #include "DockWidget.h"
 #include "Style.h"
 #include "Curves.h"

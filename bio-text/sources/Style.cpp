@@ -87,7 +87,8 @@ namespace bt {
 		if (cursive > fontsize)
 		{
 			cursive = fontsize;
-		} else if(cursive < -fontsize)
+		} 
+		else if(cursive < -fontsize)
 		{
 			cursive = -fontsize;
 		}

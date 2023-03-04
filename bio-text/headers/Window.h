@@ -1,10 +1,8 @@
 #pragma once
 #include <string>
-#include <glm/glm.hpp>
-#include "GUIObject.h"
 
 namespace bt {
-	class Window : public GUIObject
+	class Window
 	{
 	public:
 		virtual void* getNativeWindow() = 0;

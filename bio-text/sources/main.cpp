@@ -1,10 +1,10 @@
 #include "logo.h"
-#include "Application.h"
+#include "MainWindow.h"
 
 int main(int, char**)
 {
-	bt::App app;
-	app.Loop();
+	bt::MainWindow win;
+	win.Loop();
 
     return 0;
 }

@@ -97,9 +97,6 @@ namespace bt
         if (this->success)
         {
             this->running = true;
-            bool sff = true;
-            int counter = 0;
-            float some_float = 0.4;
             
             while (!glfwWindowShouldClose(this->window) && this->running)
             {
@@ -275,10 +272,6 @@ namespace bt
 
     void MainWindow::OnResize(int width, int height)
     {
-        this->size.x = width;
-        this->size.y = height;
-        //this->scene_view->Resize(width, height);
-        //this->image_view->Resize(width, height);
         this->Render();
     }
 
