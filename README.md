@@ -40,5 +40,5 @@ cmake-gui
 - Where to build the binaries type the same text, but add the directory for the binaries.
 - Click 'Configure' and select 'CodeBlocks - Unix Makefiles', wait for it and click 'Configure' again, 'Generate' next.
 - Run biotext.cbp, which was generated.
-- Select the 'biotext' as build target instead of 'all'.
+- Select the 'biotext' as build target instead of 'all' then build the target.
 - As done, copy 'default.frag' and 'default.vert' files from 'res' where your executable file and run executable.
