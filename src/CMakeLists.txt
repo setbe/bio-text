@@ -34,6 +34,7 @@ VBO.cpp
 VBO.h
 Window.cpp
 Window.h
+../external/include/glad/glad.h
 ../external/include/imgui/imgui.cpp
 ../external/include/imgui/imgui_draw.cpp
 ../external/include/imgui/imgui_tables.cpp
@@ -52,6 +53,9 @@ if(MSVC)
 	endif()
 else()
 	target_link_libraries(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/../external/lib/libglfw3.a)
+	#target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
+	set(CMAKE_CXX_FLAGS "-std=c++17")	
+	target_link_libraries(${PROJECT_NAME} dl m GL GLU X11 pthread stdc++fs)
 endif()
 
 target_include_directories(${PROJECT_NAME} PRIVATE ../src)

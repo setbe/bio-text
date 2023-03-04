@@ -407,7 +407,7 @@ inline void ImGui::FileBrowser::Display()
                             strcpy_s(inputNameBuf_->data(), inputNameBuf_->size(),
                                 selectedFilename_.u8string().c_str());
 #else
-                            std::strncpy(inputNameBuf_->data(), selectedFilename_.u8string().c_str(),
+                            strncpy(inputNameBuf_->data(), selectedFilename_.u8string().c_str(),
                                 inputNameBuf_->size());
 #endif
                         }

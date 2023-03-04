@@ -1,6 +1,6 @@
 ﻿#include "MainWindow.h"
 
-namespace bt 
+namespace bt
 {
     extern unsigned char logo[];
 
@@ -53,10 +53,14 @@ namespace bt
                 IMGUI_CHECKVERSION();
                 ImGui::CreateContext();
                 this->io = &(ImGui::GetIO()); (void)io;
+#if _MSC_VER
                 io->Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\arial.ttf", 15.0f, NULL, io->Fonts->GetGlyphRangesCyrillic());
+#else
+                io->Fonts->AddFontFromFileTTF("Ubuntu-L.ttf", 15.0f, NULL, io->Fonts->GetGlyphRangesCyrillic());
+#endif // _MSC_VER
 
                 this->io->IniFilename = nullptr;
-                
+
                 io->ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
                 io->ConfigFlags |= ImGuiConfigFlags_DockingEnable;
                 io->ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
@@ -75,7 +79,7 @@ namespace bt
 
                 this->clear_color = ImVec4(0.1f, 0.1f, 0.1f, 1.00f);
                 this->success = true;
-                
+
                 gladLoadGL();
 
                 this->scene_view = std::make_unique<SceneView>();
@@ -97,7 +101,7 @@ namespace bt
         if (this->success)
         {
             this->running = true;
-            
+
             while (!glfwWindowShouldClose(this->window) && this->running)
             {
                 glfwPollEvents();
@@ -105,8 +109,8 @@ namespace bt
             }
         }
     }
-   
-    void MainWindow::Render() 
+
+    void MainWindow::Render()
     {
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
@@ -262,7 +266,7 @@ namespace bt
 
     void MainWindow::OnScroll(float delta)
     {
-        
+
     }
 
     void MainWindow::OnKey(int key, int scan_code, int action, int mods)

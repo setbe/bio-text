@@ -1,9 +1,9 @@
 ﻿#include "SceneView.h"
 
-namespace bt 
+namespace bt
 {
 	GLfloat vertices[] =
-	{ 
+	{
 	  // Coords                 Colors              ImgCoords
 		-0.5f, -0.5f, 0.0f,     1.0f, 0.0f, 0.0f,	0.0f, 0.0f,
 		-0.5f,  0.5f, 0.0f,     0.0f, 1.0f, 0.0f,	0.0f, 1.0f,
@@ -36,9 +36,13 @@ namespace bt
 		this->style_view = std::make_unique<StyleView>(getStyle());
 		this->font_view = std::make_unique<FontView>();
 
-		setImageLoadCallback( 
-		[this](std::wstring filepath) 
-		{ 
+		setImageLoadCallback(
+#if _MSC_VER
+    [this](std::wstring filepath)
+#else
+    [this](std::string filepath)
+#endif // _MSC_VER
+		{
 			OpenImage(filepath);
 			setEditType(Edit::Image);
 		});
@@ -85,9 +89,14 @@ namespace bt
 		dialog.Display();
 		if (dialog.HasSelected())
 		{
-			auto file_path = dialog.GetSelected().wstring();
+#if _MSC_VER
+            auto file_path = dialog.GetSelected().wstring();
 			current_file = file_path.substr(file_path.find_last_of(L"/\\") + 1);
-			
+#else
+            auto file_path = dialog.GetSelected().string();
+			current_file = file_path.substr(file_path.find_last_of("/\\") + 1);
+#endif // _MSC_VER
+
 			ImageLoadCallback(file_path);
 
 			dialog.ClearSelected();

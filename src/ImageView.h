@@ -3,6 +3,7 @@
 #include <imgui_internal.h>
 #include <string>
 #include <functional>
+#include <filesystem>
 
 #include "StyleView.h"
 #include "Texture.h"
@@ -17,9 +18,14 @@ namespace bt
 		ImageView();
 		~ImageView();
 
-		void setImageLoadCallback(const std::function<void(const std::wstring&)>& callback);
+#if _MSC_VER
+        void setImageLoadCallback(const std::function<void(const std::wstring&)>& callback);
 		void OpenImage(const std::wstring& filepath);
-		
+#else
+        void setImageLoadCallback(const std::function<void(const std::string&)>& callback);
+		void OpenImage(const std::string& filepath);
+#endif // _MSC_VER
+
 		Style* getStyle()
 		{ return style; }
 
@@ -28,10 +34,15 @@ namespace bt
 		ImGui::FileBrowser dialog;
 
 	protected:
-		std::function<void(const std::wstring&)> ImageLoadCallback;
+#if _MSC_VER
+        std::function<void(const std::wstring&)> ImageLoadCallback;
+        std::wstring current_file;
+#else
+        std::function<void(const std::string&)> ImageLoadCallback;
+        std::string current_file;
+#endif // _MSC_VER
 
 		Shader* shader;
-		std::wstring current_file;
 
 	private:
 		Style* style;

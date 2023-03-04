@@ -1,6 +1,10 @@
 #include"Texture.h"
 
+#if _MSC_VER
 Texture::Texture(const wchar_t* image, GLenum texType, GLenum slot, GLenum format, GLenum pixelType, int* w, int* h)
+#else
+Texture::Texture(const char* image, GLenum texType, GLenum slot, GLenum format, GLenum pixelType, int* w, int* h)
+#endif // _MSC_VER
 {
 	// Assigns the type of the texture ot the texture object
 	type = texType;
@@ -33,13 +37,14 @@ Texture::Texture(const wchar_t* image, GLenum texType, GLenum slot, GLenum forma
 	if (!h) *h = 0;
 
 	int imgch;
-	FILE* image_file;
-
+#if _MSC_VER
+    FILE* image_file;
 	image_file = _wfopen(image, L"rb");
-
 	unsigned char* bytes = stbi_load_from_file(image_file, w, h, &imgch, 0);
-
 	fclose(image_file);
+#else
+    unsigned char* bytes = stbi_load(image, w, h, &imgch, 0);
+#endif // _MSC_VER
 
 
 	// Assigns the image to the OpenGL Texture object

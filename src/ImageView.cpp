@@ -2,14 +2,22 @@
 
 namespace bt
 {
-	void ImageView::setImageLoadCallback(const std::function<void(const std::wstring&)>& callback)
+#if _MSC_VER
+    void ImageView::setImageLoadCallback(const std::function<void(const std::wstring&)>& callback)
+#else
+    void ImageView::setImageLoadCallback(const std::function<void(const std::string&)>& callback)
+#endif // _MSC_VER
 	{
 		ImageLoadCallback = callback;
 	}
 
 	ImageView::ImageView()
 	{
-		current_file = L"< ... >";
+#if _MSC_VER
+    current_file = L"< ... >";
+#else
+    current_file = "< ... >";
+#endif // _MSC_VER
 		dialog.SetTitle("Open image");
 		dialog.SetFileFilters({".png", ".jpg"});
 
@@ -19,7 +27,8 @@ namespace bt
 		shader = nullptr;
 	}
 
-	void ImageView::OpenImage(const std::wstring& filepath)
+#if _MSC_VER
+    void ImageView::OpenImage(const std::wstring& filepath)
 	{
 		this->current_file = filepath;
 		if (tex)
@@ -45,6 +54,34 @@ namespace bt
 		}
 		this->tex->texUnit(shader, "tex0", 0);
 	}
+#else
+    void ImageView::OpenImage(const std::string& filepath)
+	{
+		this->current_file = filepath;
+		if (tex)
+			tex->Delete();
+
+		std::string s = filepath;
+		std::string delimiter = ".";
+
+		size_t pos = 0;
+		std::string token;
+		while ((pos = s.find(delimiter)) != std::string::npos) {
+			token = s.substr(0, pos);
+			s.erase(0, pos + delimiter.length());
+		}
+
+		if (s == "png")
+		{
+			tex = new Texture(current_file.c_str(), GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE, &dsize[0], &dsize[1]);
+		}
+		else
+		{
+			tex = new Texture(current_file.c_str(), GL_TEXTURE_2D, GL_TEXTURE0, GL_RGB, GL_UNSIGNED_BYTE, &dsize[0], &dsize[1]);
+		}
+		this->tex->texUnit(shader, "tex0", 0);
+	}
+#endif // _MSC_VER
 
 	ImageView::~ImageView()
 	{
@@ -55,7 +92,11 @@ namespace bt
 
 	void ImageView::RenderImage()
 	{
-		if (current_file != L"< ... >")
+#if _MSC_VER
+        if (current_file != L"< ... >")
+#else
+        if (current_file != "< ... >")
+#endif // _MSC_VER
 		{
 			if (ImGui::IsWindowHovered())
 			{
