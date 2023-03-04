@@ -7,7 +7,7 @@
 #include "StyleView.h"
 #include "Texture.h"
 #include "shaderClass.h"
-#include "File Browser/ImFileBrowser.h"
+#include "FileBrowser/ImFileBrowser.h"
 
 namespace bt
 {

@@ -10,7 +10,7 @@
 #include <functional>
 #include <memory>
 #include <string>
-#include "../../../include/imgui/imgui.h"
+#include "imgui.h"
 
 #ifndef IMGUI_VERSION
 #   error "include imgui.h before this header"
