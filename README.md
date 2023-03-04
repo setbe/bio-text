@@ -14,8 +14,8 @@ Generate unique handwrited text. Good for abstracts, essay, summary, precis, con
 5. In the 'Where is the source code' field type YOUR_PATH_TO_SOURCE_CODE_FOLDER/bio-text.
 6. Where to build the binaries type the same text, but add the folder for the binaries.
 7. Click 'Configure' and specify your IDE, wait for it and click 'Configure' again, 'Generate' next.
-8. Open IDE, build the 'biotext' target.
-9. From folder 'res' copy 'default.frag' and 'default.vert' files where your executable file and run executable.
+8. Select the 'Release' as build target instead of 'Debug'.
+9. As done, copy 'default.frag' and 'default.vert' files from 'res' where your executable file and run executable.
 
 ### Ubuntu + Code::Blocks
 
@@ -39,5 +39,6 @@ cmake-gui
 - In the 'Where is the source code' field type YOUR_PATH_TO_SOURCE_CODE_DIR/bio-text.
 - Where to build the binaries type the same text, but add the directory for the binaries.
 - Click 'Configure' and select 'CodeBlocks - Unix Makefiles', wait for it and click 'Configure' again, 'Generate' next.
-- Run biotext.cbp, build the 'biotext' target.
-- From directory 'res' copy 'default.frag' and 'default.vert' files where your executable file and run executable.
+- Run biotext.cbp, which was generated.
+- Select the 'biotext' as build target instead of 'all'.
+- As done, copy 'default.frag' and 'default.vert' files from 'res' where your executable file and run executable.
