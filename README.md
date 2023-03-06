@@ -14,7 +14,7 @@ Generate unique handwrited text. Good for abstracts, essay, summary, precis, con
 5. In the 'Where is the source code' field type YOUR_PATH_TO_SOURCE_CODE_FOLDER/bio-text.
 6. Where to build the binaries type the same text, but add the folder for the binaries.
 7. Click 'Configure' and specify your IDE, wait for it and click 'Configure' again, 'Generate' next.
-8. Select the 'Release' as build target instead of 'Debug'.
+8. Open biotext.sln, then select the 'Release' as build target instead of 'Debug'.
 9. As done, copy 'default.frag' and 'default.vert' files from 'res' where your executable file and run executable.
 
 ### Ubuntu + Code::Blocks
