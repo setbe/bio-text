@@ -35,6 +35,8 @@ namespace bt
 		this->uniID = glGetUniformLocation(shader->ID, "scale");
 		this->style_view = std::make_unique<StyleView>(getStyle());
 		this->font_view = std::make_unique<FontView>();
+		this->text_view = std::make_unique<TextView>();
+		this->font_panel = std::make_unique<FontPanel>();
 
 		setImageLoadCallback(
 #if _MSC_VER
@@ -63,7 +65,6 @@ namespace bt
 
 	void SceneView::RenderGUI()
 	{
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0.0f, 0.0f });
 		ImGui::Begin(getName(), nullptr, ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_HorizontalScrollbar);
 
 		// draw borders
@@ -76,15 +77,18 @@ namespace bt
 		{
 		case bt::Edit::Image:
 			RenderImage();
+			text_view->Render();
 			break;
 		case bt::Edit::Font:
 			font_view->Render();
+			font_panel->Render();
 			break;
 		default:
 			break;
 		}
 		ImGui::End();
-		ImGui::PopStyleVar();
+
+		style_view->Render();
 
 		dialog.Display();
 		if (dialog.HasSelected())

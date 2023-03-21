@@ -9,8 +9,7 @@ namespace bt {
 
 	void DockWidget::Render()
 	{
-		if (show)
-			RenderGUI();
+		if (show) RenderGUI();
 	}
 
 	DockWidget::~DockWidget()

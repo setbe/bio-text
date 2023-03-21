@@ -83,7 +83,6 @@ namespace bt
                 gladLoadGL();
 
                 this->scene_view = std::make_unique<SceneView>();
-                this->text_view = std::make_unique<TextView>();
             }
             else
             {
@@ -179,20 +178,17 @@ namespace bt
             ImGuiID left_id = ImGui::DockBuilderSplitNode(id, ImGuiDir_Left, 0.2f, nullptr, &id);
             ImGuiID right_id = ImGui::DockBuilderSplitNode(id, ImGuiDir_Right, 0.25f, nullptr, &id);
 
-            ImGui::DockBuilderDockWindow(scene_view->style_view->getName(), right_id);
-            ImGui::DockBuilderDockWindow(text_view->getName(), left_id);
+            scene_view->style_view->Dock(right_id);
+            scene_view->text_view->Dock(left_id);
+            scene_view->font_panel->Dock(left_id);
             ImGui::DockBuilderFinish(id);
+            scene_view->font_panel->UpdateFontNames();
         }
         ImGuiWindowClass centralAlways = {};
         centralAlways.DockNodeFlagsOverrideSet |= ImGuiDockNodeFlags_NoTabBar;
         ImGui::SetNextWindowClass(&centralAlways);
         ImGui::SetNextWindowDockID(node->ID, ImGuiCond_Always);
         scene_view->Render();
-        //ImGui::PushStyleColor(ImGuiCol_WindowBg, ColorFromBytes(37, 37, 38));
-        //ImGui::PushStyleColor(ImGuiCol_FrameBg, ColorFromBytes(37, 37, 38));
-        scene_view->style_view->Render();
-        text_view->Render();
-       // ImGui::PopStyleColor(2);
 
         RenderMenu();
     }
@@ -231,14 +227,6 @@ namespace bt
 
                 if (ImGui::MenuItem("Font##editor"))
                     scene_view->setEditType(Edit::Font);
-
-                ImGui::EndMenu();
-            }
-
-            if (ImGui::BeginMenu("View"))
-            {
-                ImGui::Checkbox("Style##checkbox", scene_view->style_view->getShow());
-                ImGui::Checkbox("Text Edit##checkbox", text_view->getShow());
 
                 ImGui::EndMenu();
             }

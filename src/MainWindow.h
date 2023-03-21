@@ -58,7 +58,6 @@ namespace bt {
         ImVec4 clear_color;
         ImGuiIO* io;
         std::unique_ptr<SceneView> scene_view;
-        std::unique_ptr<TextView> text_view;
 
         bool error_ocurred = false;
         std::exception exception;

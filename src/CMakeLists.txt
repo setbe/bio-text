@@ -10,6 +10,10 @@ DockWidget.cpp
 DockWidget.h
 EBO.cpp
 EBO.h
+Font.cpp
+Font.h
+FontPanel.cpp
+FontPanel.h
 FontView.cpp
 FontView.h
 glad.c
