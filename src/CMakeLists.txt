@@ -58,7 +58,7 @@ if(MSVC)
 else()
 	target_link_libraries(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/../external/lib/libglfw3.a)
 	#target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
-	set(CMAKE_CXX_FLAGS "-std=c++17")	
+	set(CMAKE_CXX_FLAGS "-std=c++17 -g")	
 	target_link_libraries(${PROJECT_NAME} dl m GL GLU X11 pthread stdc++fs)
 endif()
 

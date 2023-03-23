@@ -37,6 +37,7 @@ namespace bt
 		this->font_view = std::make_unique<FontView>();
 		this->text_view = std::make_unique<TextView>();
 		this->font_panel = std::make_unique<FontPanel>();
+		this->font_panel->setDefaultFont();
 
 		setImageLoadCallback(
 #if _MSC_VER

@@ -1,11 +1,11 @@
 #include "FontPanel.h"
+#include <iostream>
 
 using namespace bt;
 
 void FontPanel::RenderGUI()
 {
 	ImGui::Begin(getName());
-	
 	if (ImGui::BeginCombo("Font##fontcombo", current_font))
 	{
 		for (const auto& name : font_names)
@@ -30,17 +30,38 @@ void FontPanel::UpdateFontNames()
 
 std::vector<std::string> FontPanel::getFontNames()
 {
-	std::vector<std::string> names;
-	std::filesystem::path path = std::filesystem::current_path() / "BioFonts\\";
+	std::vector<std::string> names = {"hello.bf", "ya_yebu.bf"};
 
-	for (const auto& entry : std::filesystem::directory_iterator(path))
-	{
-		if (entry.is_regular_file() && entry.path().extension().string() == ".bf")
-		{
-			std::string name = entry.path().filename().string();
-			names.push_back(name);
-		}
-	}
+    try
+    {
+        std::filesystem::path path = std::filesystem::current_path() / "BioFonts";
+
+        for (const auto& entry : std::filesystem::directory_iterator(path))
+        {
+            if (entry.is_regular_file() && entry.path().extension().string() == ".bf")
+            {
+                std::string name = entry.path().filename().string();
+                names.push_back(name);
+            }
+        }
+    }
+    catch (std::exception& e)
+    {
+        std::cout << e.what() << std::endl;
+    }
 
 	return names;
+}
+
+void FontPanel::setDefaultFont()
+{
+	UpdateFontNames();
+	for (const auto& name : font_names)
+	{
+		if (name == "Default.bf") current_font = name.c_str();
+	}
+	if (font_names.size() > 0)
+	{
+		current_font = font_names[0].c_str();
+	}
 }
