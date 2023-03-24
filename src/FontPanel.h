@@ -4,6 +4,7 @@
 #include "imgui.h"
 #include "imgui_internal.h"
 #include "DockWidget.h"
+#include "Font.h"
 
 #if __has_include(<filesystem>)
 #  include <filesystem>
@@ -18,7 +19,7 @@ namespace bt
 	public:
 		FontPanel() : DockWidget("Font")
 		{
-            current_font = NULL;
+			setDefaultFont();
 		}
 
 		void setDefaultFont();
@@ -30,6 +31,6 @@ namespace bt
 
 	private:
 		std::vector<std::string> font_names;
-		const char* current_font;
+		Font font;
 	};
 }

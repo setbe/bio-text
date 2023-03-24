@@ -10,8 +10,10 @@ public:
 	Font();
 	~Font();
 
-	std::string getName();
 	void Save();
+	
+	void setName(std::string name);
+	std::string getName();
 
 private:
 	std::string name;

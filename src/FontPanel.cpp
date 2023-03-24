@@ -6,15 +6,14 @@ using namespace bt;
 void FontPanel::RenderGUI()
 {
 	ImGui::Begin(getName());
-	if (ImGui::BeginCombo("Font##fontcombo", current_font))
+	if (ImGui::BeginCombo("Font##fontcombo", font.getName().c_str()))
 	{
 		for (const auto& name : font_names)
 		{
-			bool is_selected = (current_font == name.c_str());
-			if (ImGui::Selectable(name.c_str(), current_font))
+			bool is_selected = (font.getName() == name);
+			if (ImGui::Selectable(name.c_str()))
 			{
-				current_font = name.c_str();
-				printf("%s\n", current_font);
+				font.setName(name);
 			}
 		}
 		ImGui::EndCombo();
@@ -30,8 +29,7 @@ void FontPanel::UpdateFontNames()
 
 std::vector<std::string> FontPanel::getFontNames()
 {
-	std::vector<std::string> names = {"hello.bf", "ya_yebu.bf"};
-
+	std::vector<std::string> names;
     try
     {
         std::filesystem::path path = std::filesystem::current_path() / "BioFonts";
@@ -47,7 +45,7 @@ std::vector<std::string> FontPanel::getFontNames()
     }
     catch (std::exception& e)
     {
-        std::cout << e.what() << std::endl;
+		throw "BioFonts doesn't exist.";
     }
 
 	return names;
@@ -58,10 +56,10 @@ void FontPanel::setDefaultFont()
 	UpdateFontNames();
 	for (const auto& name : font_names)
 	{
-		if (name == "Default.bf") current_font = name.c_str();
+		if (name == "Default.bf") font.setName(name);
 	}
 	if (font_names.size() > 0)
 	{
-		current_font = font_names[0].c_str();
+		font.setName(font_names[0]);
 	}
 }

@@ -182,7 +182,6 @@ namespace bt
             scene_view->text_view->Dock(left_id);
             scene_view->font_panel->Dock(left_id);
             ImGui::DockBuilderFinish(id);
-            scene_view->font_panel->UpdateFontNames();
         }
         ImGuiWindowClass centralAlways = {};
         centralAlways.DockNodeFlagsOverrideSet |= ImGuiDockNodeFlags_NoTabBar;

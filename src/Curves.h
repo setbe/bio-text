@@ -1,6 +1,7 @@
 #pragma once
 #include <list>
 #include <inttypes.h>
+#include <string>
 #include "imgui.h"
 
 ImVec2 CalcOpposite(ImVec2 p0, ImVec2 p_opposite);
