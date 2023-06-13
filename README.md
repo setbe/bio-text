@@ -1,4 +1,4 @@
-# BioText
+# CURRENTLY WAITING FOR OWN GUI LIB
 Generate unique handwrited text. Good for abstracts, essay, summary, precis, conspectus
 
 
